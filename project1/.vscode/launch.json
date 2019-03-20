@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - MulticastSocketServer",
+            "request": "launch",
+            "mainClass": "MulticastSocketServer"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - HelloRunnable",
+            "request": "launch",
+            "mainClass": "HelloRunnable"
+        }
+    ]
+}
