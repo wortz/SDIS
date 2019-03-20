@@ -6,15 +6,24 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 
 
 public class Peer{
     private BackupChannel MDB;
 
-    private Peer(){
+    private Peer(int type){
         MDB=new BackupChannel();
     }
-    public static void main(String args[]){
-        Peer peer= new Peer();
+
+    public BackupChannel getMDB(){
+        return MDB;
     }
+    public static void main(String args[]){
+        Peer peer1= new Peer(1);
+
+    }
+
 }

@@ -1,0 +1,24 @@
+2 peers numa maquina e 1 noutra
+como se inicia cada peer: 
+versão 1.0 é sem enanchement
+versão 1.1 é com
+serviceaccesspoint varia
+os ultimos 3 é o ip de cada multicast
+
+
+chunkrestore:
+peer envia mensagem getchunk
+os restantes peers verificam se guardaram o chunk
+se sim vai buscar o chunk e envia pelo MDR, cada um espera entre 0 e 400ms para enviar o chunk e nesse tempo fica tbm à escuta no mdr para verificar se alguém respondeu.
+
+
+chunkdelete:
+um peer envia a mensagem delete no canal MC
+Os restantes estão sempre à escuta no MC e ao receberem a mensagem de delete se tiverem o chunk com esse id apagam-no
+o peer que envia a mensagem envia várias vezes para ter a certeza que o chunk é apagado
+
+
+space reclaiming subprotocol:
+se um peer decidir apagar um chunk por causa de espaço esse envia um removed no canal MC
+OS peers que tiverem o mesmo chunk verificam o replication degree , se não for igual esperam entre 0 e 400ms
+se algum dos peers tiver tomado a iniciativa nesse intervalo de tempo eles ignoram se não enviam eles um putchunk para 
