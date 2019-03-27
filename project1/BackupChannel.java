@@ -17,6 +17,16 @@ public class BackupChannel implements Runnable {
 
     }
 
+    public void message(byte[] msg) {
+        try (DatagramSocket senderSocket = new DatagramSocket()){
+            DatagramPacket msgPacket = new DatagramPacket(msg, msg.length, address, PORT);
+            senderSocket.send(msgPacket);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void run(){
         // Create a buffer of bytes, which will be used to store
         // the incoming bytes containing the information from the server.

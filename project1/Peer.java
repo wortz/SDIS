@@ -15,14 +15,18 @@ public class Peer{
     private BackupChannel MDB;
 
     private Peer(int type){
+        byte[] msg = {'b','o'};
         MDB=new BackupChannel();
+        if(type==1){
+            MDB.message(msg);
+        }
     }
 
     public BackupChannel getMDB(){
         return MDB;
     }
     public static void main(String args[]){
-        Peer peer1= new Peer(1);
+        Peer peer1= new Peer(Integer.parseInt(args[0]));
 
     }
 
