@@ -3,14 +3,14 @@ import java.net.*;
 import java.util.Arrays;
 
 public class BackupChannel implements Runnable {
-    final static String INET_ADDR = "localhost";
-    final static int PORT = 8888;
     private InetAddress address;
+    private int portMC;
 
-    public BackupChannel(){
+    public BackupChannel(String MC, int portMC){
         try {
             // Get the address that we are going to connect to.
-            address = InetAddress.getByName(INET_ADDR);
+            address = InetAddress.getByName(MC);
+            this.portMC = portMC;
         } catch (UnknownHostException e) {
         e.printStackTrace();
         }
@@ -19,7 +19,7 @@ public class BackupChannel implements Runnable {
 
     public void message(byte[] msg) {
         try (DatagramSocket senderSocket = new DatagramSocket()){
-            DatagramPacket msgPacket = new DatagramPacket(msg, msg.length, address, PORT);
+            DatagramPacket msgPacket = new DatagramPacket(msg, msg.length, address, portMC);
             senderSocket.send(msgPacket);
 
         } catch (IOException ex) {
@@ -35,7 +35,7 @@ public class BackupChannel implements Runnable {
 
         // Create a new Multicast socket (that will allow other sockets/programs
         // to join it as well.
-        try (MulticastSocket receiverSocket = new MulticastSocket(PORT)){
+        try (MulticastSocket receiverSocket = new MulticastSocket(portMC)){
             //Joint the Multicast group.
             receiverSocket.joinGroup(address);
 
