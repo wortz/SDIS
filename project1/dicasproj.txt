@@ -1,5 +1,6 @@
 2 peers numa maquina e 1 noutra
-como se inicia cada peer: 
+como se inicia cada peer:
+id de cada peer
 versão 1.0 é sem enanchement
 versão 1.1 é com
 serviceaccesspoint varia
