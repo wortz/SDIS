@@ -34,8 +34,8 @@ public class TestApp{
                 Registry registry = LocateRegistry.getRegistry(host);
 
                 RmiInterface stub = (RmiInterface) registry.lookup("remote");
-                String response = stub.test();
-                System.out.println("response: " + response);
+                stub.backupFile("penguin.gif", 1);
+                System.out.println("response");
             } catch (Exception e) {
                 System.err.println("Client exception: " + e.toString());
                 e.printStackTrace();
