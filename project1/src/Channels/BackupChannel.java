@@ -3,19 +3,27 @@ package channels;
 import java.io.IOException;
 import java.net.*;
 import java.util.Arrays;
+import java.net.MulticastSocket;
+import java.net.InetAddress;
+import java.net.DatagramPacket;
 
 public class BackupChannel implements Runnable {
     private InetAddress address;
-    private int portMC;
+    private int portMDB;
 
-    public BackupChannel(String MC, int portMC){
-        try {
-            // Get the address that we are going to connect to.
-            address = InetAddress.getByName(MC);
-            this.portMC = portMC;
-        } catch (UnknownHostException e) {
-        e.printStackTrace();
-        }
+    private MulticastSocket socket;
+
+    public BackupChannel(String MDB, int portMDB){
+
+        this.socket = new MulticastSocket(port);
+        this.socket.setTimeToLive(1);
+
+        address = InetAddress.getByName(MDB);
+        this.portMC = portMC;
+
+        socket.joinGroup(this.address);
+
+        System.out.println("Multicast Channel" + address + " "  + portMDB);
 
     }
 
