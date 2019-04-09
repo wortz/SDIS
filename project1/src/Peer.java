@@ -9,6 +9,9 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.io.File;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 
 public class Peer implements RmiInterface {
     private static double version;
@@ -20,7 +23,11 @@ public class Peer implements RmiInterface {
     private BackupChannel MDB;
     private RestoreChannel MDR;
 
+    private ScheduledExecutorService exec;
+
     private Peer(String args[]) throws IOException {
+        //exec = new ScheduledThreadPoolExecutor(10);
+
         this.version = Double.parseDouble(args[0]);
 
         this.id = Integer.parseInt(args[1]);
