@@ -23,7 +23,7 @@ public abstract class Channel implements Runnable {
 
     @Override
     public void run() {
-        byte[] buf = new byte[65536];
+        byte[] buf = new byte[64000];
 
         while(true) {
             DatagramPacket multicastPacket = new DatagramPacket(buf, buf.length);
