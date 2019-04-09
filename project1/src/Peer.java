@@ -1,11 +1,16 @@
+package bin;
+
 import channels.*;
 import rmi.RmiInterface;
+import utility.Utility;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.io.File;
 
 public class Peer implements RmiInterface {
     private static double version;
@@ -16,8 +21,7 @@ public class Peer implements RmiInterface {
     private ControlChannel MC;
     private BackupChannel MDB;
     private RestoreChannel MDR;
-    
-    
+
     private Peer(String args[]) throws IOException {
         this.version = Double.parseDouble(args[0]);
 
@@ -39,7 +43,6 @@ public class Peer implements RmiInterface {
         MDB = new BackupChannel(MDB_Address, MDB_Port);
         MDR = new RestoreChannel(MDR_Address, MDR_Port);
 
-
         new Thread(MC).start();
         new Thread(MDB).start();
         new Thread(MDR).start();
@@ -53,10 +56,17 @@ public class Peer implements RmiInterface {
     }
 
     @Override
-    public void backupFile(String filePath, int replicationDegree) throws RemoteException{
-        String header = "PUTCHUNK 1.0 " + this.id + " FileID 1 1 " + Message.CRLF + Message.CRLF;
+    public void backupFile(String path, int replicationDegree) throws RemoteException {
+        File file = new File(path);
+        String fileID = Utility.getFileSHA(file);
         try {
-            MDB.message(header);
+            String header = "PUTCHUNK " + this.version + " " + this.id + " " + fileID + " ";
+            ArrayList<String> chunks = Utility.getChunks(path,header.length());
+            for (int i = 0; i < chunks.size(); i++) {
+                String restMessage = header + (i + 1) + " " + replicationDegree + " " + Message.CRLF + Message.CRLF
+                        + chunks.get(i);
+                MDB.message(restMessage);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,9 +87,10 @@ public class Peer implements RmiInterface {
     }
 
     public static void main(String args[]) throws IOException {
-        
-        if(args.length < 9){
-            System.out.println("Insert arguments as <protocol_version> <server_id> <service_ap> <MC_Address> <MC_Port> <MDB_Address> <MDB_Port> <MDR_Address> <MDR_Port> ");
+
+        if (args.length < 9) {
+            System.out.println(
+                    "Insert arguments as <protocol_version> <server_id> <service_ap> <MC_Address> <MC_Port> <MDB_Address> <MDB_Port> <MDR_Address> <MDR_Port> ");
         }
 
         Peer peer = new Peer(args);

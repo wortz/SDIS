@@ -1,1 +1,0 @@
-java -classpath . -Djava.rmi.server.codebase=file:./ client/TestApp asd asd asd 2

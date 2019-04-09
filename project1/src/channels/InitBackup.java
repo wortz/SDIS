@@ -12,7 +12,7 @@ public class InitBackup implements Runnable {
 
 
 
-    public InitBackup(int replicationDegree, Channel channel, int senderID, String path){
+    public InitBackup(int replicationDegree, BackupChannel channel, int senderID, String path){
         this.replicationDegree = replicationDegree;
         this.channel = channel;
         this.senderID = senderID;

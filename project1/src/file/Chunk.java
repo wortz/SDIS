@@ -8,7 +8,7 @@ public class Chunk{
     private int senderID;
 
     public Chunk(int index, byte[] data, int replicationDegree, String fileID, int senderID) {
-        this.index = chunkIndex;
+        this.index = index;
         this.data = data;
         this.replicationDegree = replicationDegree;
         this.fileID = fileID;
