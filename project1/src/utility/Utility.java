@@ -9,11 +9,23 @@ public class Utility {
   public static int MAX_WAIT_TIME = 400;
   public static int PUTCHUNK_TRIES = 5;
 
-  // Receives a file, gets its name and use sha256 to encode it
   public static final String getFileName(File file) {
-    String fileUniqueStr = file.getName();
-    MessageDigest sha_256 = MessageDigest.getInstance("SHA-256");
-    byte[] hashed = sha_256.digest(fileUniqueStr.getBytes());
-    return DatatypeConverter.printHexBinary(hashed);
+    String fileUniqueStr = file.getName() + file.lastModified();
+    try {
+      MessageDigest md = MessageDigest.getInstance("SHA-256");
+      byte[] messageDigest = md.digest(fileUniqueStr.getBytes());
+      BigInteger no = new BigInteger(1, messageDigest);
+      String hashtext = no.toString(16);
+      while (hashtext.length() < 32) {
+        hashtext = "0" + hashtext;
+      }
+
+      return hashtext;
+    }
+    catch (NoSuchAlgorithmException e) {
+      System.out.println("Exception thrown" + " for incorrect algorithm: " + e);
+
+      return null;
+    }
   }
 }
