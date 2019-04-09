@@ -5,7 +5,7 @@ package channels;
 
 public class InitBackup implements Runnable {
     private int replicationDegree;
-    Channel channel;
+    BackupChannel channel;
     private int senderID;
     private String path;
     private Message request;

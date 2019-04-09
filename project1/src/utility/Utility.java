@@ -1,5 +1,7 @@
 package utility;
 
+import file.Chunk;
+
 import java.io.File;
 import java.security.MessageDigest;
 import javax.xml.bind.DatatypeConverter;
@@ -27,5 +29,9 @@ public class Utility {
 
       return null;
     }
+  }
+
+  public static ArrayList<Chunck> getChunks(File file){
+
   }
 }
