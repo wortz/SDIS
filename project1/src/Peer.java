@@ -1,5 +1,3 @@
-package bin;
-
 import channels.*;
 import rmi.RmiInterface;
 import utility.Utility;

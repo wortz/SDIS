@@ -1,6 +1,5 @@
 package utility;
 
-import file.Chunk;
 
 import java.io.File;
 import java.security.MessageDigest;
