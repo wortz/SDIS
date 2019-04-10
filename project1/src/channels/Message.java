@@ -38,7 +38,7 @@ public class Message {
             buff.append(this.replicationDegree + " ");
         buff.append(Message.CRLF+Message.CRLF);
         if(this.body != null)
-            buff.append(this.body); 
+            buff.append(this.body);
     return buff.toString();
     }
             

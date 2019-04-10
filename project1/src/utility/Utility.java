@@ -12,13 +12,20 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+
 public class Utility {
   public static int MAX_WAIT_TIME = 400;
+
   public static int PUTCHUNK_TRIES = 5;
+
   public static int BUF_SIZE = 64000;
 
+
+
   public static final String getFileSHA(File file) {
+
     String fileUniqueStr = file.getName() + file.lastModified();
+
     try {
       MessageDigest md = MessageDigest.getInstance("SHA-256");
       byte[] messageDigest = md.digest(fileUniqueStr.getBytes());
@@ -34,6 +41,17 @@ public class Utility {
 
       return null;
     }
+  }
+
+  static String sha256(String input) throws NoSuchAlgorithmException {
+    MessageDigest mDigest = MessageDigest.getInstance("SHA256");
+    byte[] result = mDigest.digest(input.getBytes());
+    StringBuffer sb = new StringBuffer();
+    for (int i = 0; i < result.length; i++) {
+      sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+    }
+
+    return sb.toString();
   }
 
   public static ArrayList<String> getChunks(String path, int headerSize) throws IOException{
