@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import java.util.io.FileInputStream;
+import java.util.io.ByteArrayInputStream;
+import java.util.BufferedReader;
+
 public class MessageHandler implements Runnable {
 
     protected byte[] msgBytes;
@@ -52,5 +56,22 @@ public class MessageHandler implements Runnable {
     private synchronized void manageStored(){
 
     }
+
+    public static String[] manageHeader(DatagramPacket packet){
+        String response = "";
+
+        ByteArrayInputStream stream = new ByteArrayInputStream(packet.getData());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+        try{
+            response = reader.readLine();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+
 
 }

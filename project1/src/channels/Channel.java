@@ -9,24 +9,25 @@ public abstract class Channel implements Runnable {
 
     protected InetAddress address;
     protected int port;
-
     protected MulticastSocket socket;
 
     public Channel(String address, int port) throws IOException {
-        this.socket = new MulticastSocket(port);
-        this.socket.setTimeToLive(1);
         this.address = InetAddress.getByName(address);
         this.port = port;
+
+        socket = new MulticastSocket(port);
+        socket.setTimeToLive(1);
         socket.joinGroup(this.address);
+
         System.out.println("Joined Multicast Channel " + address + ":" + port);
     }
 
     @Override
     public void run() {
         byte[] buf = new byte[65507];
-        DatagramPacket multicastPacket = new DatagramPacket(buf, buf.length);
 
         while(true) {
+            DatagramPacket multicastPacket = new DatagramPacket(buf, buf.length);
 
             try {
                 this.socket.receive(multicastPacket);
@@ -38,13 +39,13 @@ public abstract class Channel implements Runnable {
 
 
                 //2 option
-                //byte[] bufCopy = Arrays.copyOf(buf, multicastPacket.getLength());
-                //Peer.getExec().execute(new MessageHandler(bufCopy));
+                //Peer.getExec().execute(new MessageHandler(multicastPacket));
 
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
+        socket.close();
     }
 
     public void parseMessage(DatagramPacket packet) {
