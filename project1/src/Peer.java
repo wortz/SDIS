@@ -69,12 +69,16 @@ public class Peer implements RmiInterface {
         File file = new File(path);
         String fileID = Utility.getFileSHA(file);
         try {
-            String header = "PUTCHUNK " + this.version + " " + this.id + " " + fileID + " ";
-            ArrayList<String> chunks = Utility.getChunks(path,header.length());
+            String headerAux = "PUTCHUNK " + this.version + " " + this.id + " " + fileID + " ";
+            ArrayList<byte[]> chunks = Utility.getChunks(path);
             for (int i = 0; i < chunks.size(); i++) {
-                String restMessage = header + (i + 1) + " " + replicationDegree + " " + Message.CRLF + Message.CRLF
-                        + chunks.get(i);
-                Message msg=new Message(restMessage, MDB);
+                String restMessage = headerAux + (i + 1) + " " + replicationDegree + " " + Message.CRLF + Message.CRLF;
+                byte[] body = chunks.get(i);
+                byte[] header = restMessage.getBytes("US-ASCII");
+                byte[] message = new byte[header.length+body.length];
+                System.arraycopy(header, 0, message, 0, header.length);
+                System.arraycopy(body, 0, message, header.length, body.length);
+                Message msg=new Message(message, MDB);
                 exec.execute(msg);
             }
         } catch (IOException e) {

@@ -5,9 +5,9 @@ import java.net.DatagramPacket;
 public class Message  implements Runnable {
     public static String CRLF = "\\r\\n";
     public Channel multicastChannel;
-    public String message;
+    public byte[] message;
             
-    public Message (String message, Channel multicastChannel){
+    public Message (byte[] message, Channel multicastChannel){
         this.message = message;
         this.multicastChannel = multicastChannel;
     }

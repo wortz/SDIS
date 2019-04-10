@@ -42,9 +42,9 @@ public abstract class Channel implements Runnable {
         //System.out.println(request);
     }
 
-    public void message(String message) throws IOException{
-        byte[] buf = message.getBytes();
-        this.socket.send(new DatagramPacket(buf, buf.length, address, port));
+    public void message(byte[] message) throws IOException{
+        System.out.println(message.length);
+        this.socket.send(new DatagramPacket(message, message.length, address, port));
     }
 
 }

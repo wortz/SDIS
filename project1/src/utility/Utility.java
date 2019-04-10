@@ -1,6 +1,7 @@
 package utility;
 
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.security.MessageDigest;
 import javax.xml.bind.DatatypeConverter;
@@ -54,21 +55,26 @@ public class Utility {
     return sb.toString();
   }
 
-  public static ArrayList<String> getChunks(String path, int headerSize) throws IOException{
-    System.out.println(headerSize);
-    ArrayList<String> result = new ArrayList<String>();
+  public static ArrayList<byte[]> getChunks(String path) throws IOException{
+    ArrayList<byte[]> result = new ArrayList<byte[]>();
     File file = new File(path);
     long size = file.length();
     int chunksNr = (int) ((size / CHUNK_SIZE) + 1);
     try {
-      FileInputStream fileInput = new FileInputStream(file);
+      FileInputStream fileStream = new FileInputStream(file);
+      BufferedInputStream bufferedFile = new BufferedInputStream(fileStream);
       for (int i = 0; i < chunksNr; i++) {
-        byte[] buf = new byte[CHUNK_SIZE];
-        fileInput.read(buf);
-        System.out.println(buf.length);
-        String value = new String(buf, StandardCharsets.UTF_8);
-        String rest = value +
-        result.add(value);
+        byte[] aux = new byte[CHUNK_SIZE];
+        byte[] buf;
+        int bytesNr = bufferedFile.read(aux);
+        if(bytesNr == -1)
+          buf=new byte[0];
+        else if(bytesNr < CHUNK_SIZE)
+          buf = new byte[bytesNr];
+        else
+          buf = new byte[CHUNK_SIZE];
+        System.arraycopy(aux,0,buf,0,buf.length);
+        result.add(buf);
       }
     } catch (FileNotFoundException e) {
       e.printStackTrace();
