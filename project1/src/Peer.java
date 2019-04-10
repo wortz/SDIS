@@ -26,7 +26,7 @@ public class Peer implements RmiInterface {
     private ScheduledExecutorService exec;
 
     private Peer(String args[]) throws IOException {
-        //exec = new ScheduledThreadPoolExecutor(10);
+        exec = new ScheduledThreadPoolExecutor(10);
 
         this.version = Double.parseDouble(args[0]);
 
@@ -52,6 +52,10 @@ public class Peer implements RmiInterface {
         new Thread(MDB).start();
         new Thread(MDR).start();
 
+        exec.execute(MC);
+        exec.execute(MDB);
+        exec.execute(MDR);
+
     }
 
     @Override
@@ -70,6 +74,8 @@ public class Peer implements RmiInterface {
             for (int i = 0; i < chunks.size(); i++) {
                 String restMessage = header + (i + 1) + " " + replicationDegree + " " + Message.CRLF + Message.CRLF
                         + chunks.get(i);
+                Message msg=new Message(restMessage, MDB);
+                exec.execute(msg);
                 MDB.message(restMessage);
             }
         } catch (IOException e) {
