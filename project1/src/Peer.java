@@ -23,7 +23,7 @@ public class Peer implements RmiInterface {
     private BackupChannel MDB;
     private RestoreChannel MDR;
 
-    //private ScheduledExecutorService exec;
+    private ScheduledExecutorService exec;
 
     private Peer(String args[]) throws IOException {
         exec = new ScheduledThreadPoolExecutor(10);
@@ -76,7 +76,6 @@ public class Peer implements RmiInterface {
                         + chunks.get(i);
                 Message msg=new Message(restMessage, MDB);
                 exec.execute(msg);
-                MDB.message(restMessage);
             }
         } catch (IOException e) {
             e.printStackTrace();

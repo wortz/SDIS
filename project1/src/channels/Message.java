@@ -14,7 +14,12 @@ public class Message  implements Runnable {
 
     @Override
     public void run(){
-        this.multicastChannel.message(message);
+        try {
+            this.multicastChannel.message(message);
+        }catch (Exception e) {
+            System.err.println("Message exception: " + e.toString());
+            e.printStackTrace();
+        }
     }
             
 }

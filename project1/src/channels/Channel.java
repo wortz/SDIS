@@ -23,7 +23,7 @@ public abstract class Channel implements Runnable {
 
     @Override
     public void run() {
-        byte[] buf = new byte[65000];
+        byte[] buf = new byte[65507];
 
         while(true) {
             DatagramPacket multicastPacket = new DatagramPacket(buf, buf.length);
@@ -39,7 +39,7 @@ public abstract class Channel implements Runnable {
 
     public void parseMessage(DatagramPacket packet) {
         String request = new String(packet.getData()).trim();
-        System.out.println(request);
+        //System.out.println(request);
     }
 
     public void message(String message) throws IOException{

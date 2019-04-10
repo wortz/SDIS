@@ -18,7 +18,7 @@ public class Utility {
 
   public static int PUTCHUNK_TRIES = 5;
 
-  public static int BUF_SIZE = 64000;
+  public static int CHUNK_SIZE = 64000;
 
 
 
@@ -55,16 +55,19 @@ public class Utility {
   }
 
   public static ArrayList<String> getChunks(String path, int headerSize) throws IOException{
+    System.out.println(headerSize);
     ArrayList<String> result = new ArrayList<String>();
     File file = new File(path);
     long size = file.length();
-    int chunksNr = (int) (size / (BUF_SIZE-headerSize) + 1);
+    int chunksNr = (int) ((size / CHUNK_SIZE) + 1);
     try {
       FileInputStream fileInput = new FileInputStream(file);
       for (int i = 0; i < chunksNr; i++) {
-        byte[] buf = new byte[(BUF_SIZE-headerSize)];
+        byte[] buf = new byte[CHUNK_SIZE];
         fileInput.read(buf);
+        System.out.println(buf.length);
         String value = new String(buf, StandardCharsets.UTF_8);
+        String rest = value +
         result.add(value);
       }
     } catch (FileNotFoundException e) {
