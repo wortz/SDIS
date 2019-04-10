@@ -19,9 +19,9 @@ public class Peer implements RmiInterface {
     private static int id;
     private String service_ap;
 
-    private ControlChannel MC;
-    private BackupChannel MDB;
-    private RestoreChannel MDR;
+    private Channel MC;
+    private Channel MDB;
+    private Channel MDR;
 
     private ScheduledExecutorService exec;
 
@@ -44,9 +44,9 @@ public class Peer implements RmiInterface {
         String MDR_Address = args[7];
         int MDR_Port = Integer.parseInt(args[8]);
 
-        MC = new ControlChannel(MC_Address, MC_Port);
-        MDB = new BackupChannel(MDB_Address, MDB_Port);
-        MDR = new RestoreChannel(MDR_Address, MDR_Port);
+        MC = new Channel(MC_Address, MC_Port);
+        MDB = new Channel(MDB_Address, MDB_Port);
+        MDR = new Channel(MDR_Address, MDR_Port);
 
         new Thread(MC).start();
         new Thread(MDB).start();

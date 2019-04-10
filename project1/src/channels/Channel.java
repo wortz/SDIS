@@ -32,7 +32,7 @@ public abstract class Channel implements Runnable {
             try {
                 this.socket.receive(multicastPacket);
                 parseMessage(multicastPacket);
-
+                Peer.getExec();
 
                 // 1 ioption
                 //this.parentPeer.MessageHandler(packet.getData(), packet.getLength());
