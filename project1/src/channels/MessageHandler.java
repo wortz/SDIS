@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import java.util.io.FileInputStream;
-import java.util.io.ByteArrayInputStream;
-import java.util.BufferedReader;
+import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.BufferedReader;
+import java.net.DatagramPacket;
+import java.io.InputStreamReader;
 
 public class MessageHandler implements Runnable {
 
@@ -69,7 +71,7 @@ public class MessageHandler implements Runnable {
             e.printStackTrace();
         }
 
-        return response;
+        return response.split(" ");
     }
 
 

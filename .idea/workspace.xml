@@ -3,9 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="cac9fbd6-bf65-4fbc-a1bb-6ac6b62c91b3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/bin/channels/Channel.class" beforeDir="false" afterPath="$PROJECT_DIR$/project1/bin/channels/Channel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/bin/utility/Utility.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/project1/src/channels/Channel.java" beforeDir="false" afterPath="$PROJECT_DIR$/project1/src/channels/Channel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project1/src/channels/MessageHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/project1/src/channels/MessageHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/src/rmi/RmiInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/project1/src/rmi/RmiInterface.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,7 +40,7 @@
         <entry file="file://$PROJECT_DIR$/project1/src/channels/MessageHandler.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="437">
-              <caret line="71" column="13" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
+              <caret line="73" column="32" selection-start-line="73" selection-start-column="32" selection-end-line="73" selection-end-column="32" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#364#365#0" expanded="true" />
@@ -66,8 +67,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/project1/src/channels/Channel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="212">
-              <caret line="33" column="44" selection-start-line="33" selection-start-column="29" selection-end-line="33" selection-end-column="44" />
+            <state relative-caret-position="137">
+              <caret line="36" column="28" lean-forward="true" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -79,7 +80,7 @@
         <entry file="file://$PROJECT_DIR$/project1/src/client/TestApp.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="150">
-              <caret line="14" column="29" lean-forward="true" selection-start-line="14" selection-start-column="29" selection-end-line="14" selection-end-column="29" />
+              <caret line="14" column="29" selection-start-line="14" selection-start-column="29" selection-end-line="14" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -250,7 +251,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="22342000" />
+    <option name="totallyTimeSpent" value="24070000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1301" height="772" extended-state="6" />
@@ -348,7 +349,7 @@
     <entry file="file://$PROJECT_DIR$/project1/src/client/TestApp.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
-          <caret line="14" column="29" lean-forward="true" selection-start-line="14" selection-start-column="29" selection-end-line="14" selection-end-column="29" />
+          <caret line="14" column="29" selection-start-line="14" selection-start-column="29" selection-end-line="14" selection-end-column="29" />
         </state>
       </provider>
     </entry>
@@ -410,8 +411,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/project1/src/channels/Channel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="33" column="44" selection-start-line="33" selection-start-column="29" selection-end-line="33" selection-end-column="44" />
+        <state relative-caret-position="137">
+          <caret line="36" column="28" lean-forward="true" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -421,7 +422,7 @@
     <entry file="file://$PROJECT_DIR$/project1/src/channels/MessageHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="437">
-          <caret line="71" column="13" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
+          <caret line="73" column="32" selection-start-line="73" selection-start-column="32" selection-end-line="73" selection-end-column="32" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#364#365#0" expanded="true" />

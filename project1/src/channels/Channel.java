@@ -45,7 +45,7 @@ public abstract class Channel implements Runnable {
                 ex.printStackTrace();
             }
         }
-        socket.close();
+        //this.socket.close();
     }
 
     public void parseMessage(DatagramPacket packet) {
