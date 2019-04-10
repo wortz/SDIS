@@ -24,13 +24,23 @@ public abstract class Channel implements Runnable {
     @Override
     public void run() {
         byte[] buf = new byte[65507];
+        DatagramPacket multicastPacket = new DatagramPacket(buf, buf.length);
 
         while(true) {
-            DatagramPacket multicastPacket = new DatagramPacket(buf, buf.length);
 
             try {
                 this.socket.receive(multicastPacket);
                 parseMessage(multicastPacket);
+
+
+                // 1 ioption
+                //this.parentPeer.MessageHandler(packet.getData(), packet.getLength());
+
+
+                //2 option
+                //byte[] bufCopy = Arrays.copyOf(buf, multicastPacket.getLength());
+                //Peer.getExec().execute(new MessageHandler(bufCopy));
+
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -39,7 +49,7 @@ public abstract class Channel implements Runnable {
 
     public void parseMessage(DatagramPacket packet) {
         String request = new String(packet.getData()).trim();
-        //System.out.println(request);
+            //System.out.println(request);
     }
 
     public void message(byte[] message) throws IOException{
