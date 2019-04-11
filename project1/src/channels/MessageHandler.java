@@ -1,3 +1,5 @@
+package channels;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,41 +14,47 @@ import java.io.ByteArrayInputStream;
 import java.io.BufferedReader;
 import java.net.DatagramPacket;
 import java.io.InputStreamReader;
+import peer.Peer;
+
+
 
 public class MessageHandler implements Runnable {
 
-    protected byte[] msgBytes;
+    protected DatagramPacket packet;
+    protected String[] messageParts;
 
-    public MessageHandler(byte[] msgBytes) {
-        this.msgBytes = msgBytes;
+    public MessageHandler(DatagramPacket packet) {
+        this.packet = packet;
     }
 
     public void run() {
-        String message = new String(this.msgBytes, 0, this.msgBytes.length);
-        String trimMessage = message.trim();
-        String[] msgArray = trimMessage.split(" ");
+        messageParts = managePacket(packet);
 
-        switch (msgArray[0]) {
+        int sender_id = Integer.parseInt(messageParts[2]);
+
+        // if message comes from self ignore it
+        if(sender_id == Peer.getId()) return;
+
+        switch (messageParts[0]) {
             case "PUTCHUNK":
                 managePutchunk();
                 break;
             case "STORED":
                 manageStored();
                 break;
-        /*
-        case "GETCHUNK":
-            manageGetChunk();
-            break;
-        case "CHUNK":
-            manageChunk();
-            break;
-        case "DELETE":
-            manageDelete();
-            break;
-        case "REMOVED":
-            manageRemoved();
-            break;
-        */
+            case "GETCHUNK":
+                manageGetChunk();
+                break;
+            case "CHUNK":
+                manageChunk();
+                break;
+            case "DELETE":
+                manageDelete();
+                break;
+            case "REMOVED":
+                manageRemoved();
+                break;
+
         }
     }
 
@@ -59,7 +67,23 @@ public class MessageHandler implements Runnable {
 
     }
 
-    public static String[] manageHeader(DatagramPacket packet){
+    private synchronized void manageGetChunk(){
+
+    }
+
+    private synchronized void manageChunk(){
+
+    }
+
+    private synchronized void manageDelete(){
+
+    }
+
+    private synchronized void manageRemoved(){
+
+    }
+
+    public static String[] managePacket(DatagramPacket packet){
         String response = "";
 
         ByteArrayInputStream stream = new ByteArrayInputStream(packet.getData());

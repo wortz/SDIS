@@ -1,3 +1,5 @@
+package peer;
+
 import channels.*;
 import rmi.RmiInterface;
 import utility.Utility;
@@ -55,7 +57,10 @@ public class Peer implements RmiInterface {
         exec.execute(MC);
         exec.execute(MDB);
         exec.execute(MDR);
+    }
 
+    public static int getId() {
+        return id;
     }
 
     @Override
