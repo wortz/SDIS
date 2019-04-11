@@ -21,9 +21,9 @@ public class Peer implements RmiInterface {
     private static int id;
     private String service_ap;
 
-    private ControlChannel MC;
-    private BackupChannel MDB;
-    private RestoreChannel MDR;
+    private Channel MC;
+    private Channel MDB;
+    private Channel MDR;
 
     private ScheduledExecutorService exec;
 
@@ -46,9 +46,9 @@ public class Peer implements RmiInterface {
         String MDR_Address = args[7];
         int MDR_Port = Integer.parseInt(args[8]);
 
-        MC = new ControlChannel(MC_Address, MC_Port);
-        MDB = new BackupChannel(MDB_Address, MDB_Port);
-        MDR = new RestoreChannel(MDR_Address, MDR_Port);
+        MC = new Channel(MC_Address, MC_Port,this);
+        MDB = new Channel(MDB_Address, MDB_Port,this);
+        MDR = new Channel(MDR_Address, MDR_Port,this);
 
         new Thread(MC).start();
         new Thread(MDB).start();
@@ -83,10 +83,22 @@ public class Peer implements RmiInterface {
                 byte[] message = new byte[header.length+body.length];
                 System.arraycopy(header, 0, message, 0, header.length);
                 System.arraycopy(body, 0, message, header.length, body.length);
-                Message msg=new Message(message, MDB);
+                Message msg=new Message(message, this.MDB);
                 exec.execute(msg);
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void handlePutChunk(){
+        String message = "Stored 1.0 1 1 " + Message.CRLF + Message.CRLF;
+        try{
+        byte[] buf = message.getBytes("US-ASCII");
+        Message control = new Message(buf,this.MC);
+        exec.execute(control);
+        }   catch(IOException e){
             e.printStackTrace();
         }
     }

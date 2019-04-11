@@ -2,12 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cac9fbd6-bf65-4fbc-a1bb-6ac6b62c91b3" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/bin/MessageHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/bin/Peer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/make.sh" beforeDir="false" afterPath="$PROJECT_DIR$/project1/make.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/src/Peer.java" beforeDir="false" afterPath="$PROJECT_DIR$/project1/src/peer/Peer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project1/src/channels/MessageHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/project1/src/channels/MessageHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/bin/channels/BackupChannel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/bin/channels/Channel.class" beforeDir="false" afterPath="$PROJECT_DIR$/project1/bin/channels/Channel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/bin/channels/ControlChannel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/bin/channels/InitBackup.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/bin/channels/RestoreChannel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/bin/peer/Peer.class" beforeDir="false" afterPath="$PROJECT_DIR$/project1/bin/peer/Peer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/compile.bat" beforeDir="false" afterPath="$PROJECT_DIR$/project1/compile.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/filesToTest/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/project1/filesToTest/test.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/runPeer.bat" beforeDir="false" afterPath="$PROJECT_DIR$/project1/runPeer.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/runPeer1.bat" beforeDir="false" afterPath="$PROJECT_DIR$/project1/runPeer1.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/src/channels/BackupChannel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/src/channels/Channel.java" beforeDir="false" afterPath="$PROJECT_DIR$/project1/src/channels/Channel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/src/channels/ControlChannel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/src/channels/InitBackup.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/src/channels/RestoreChannel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project1/src/peer/Peer.java" beforeDir="false" afterPath="$PROJECT_DIR$/project1/src/peer/Peer.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,11 +34,9 @@
         <entry file="file://$PROJECT_DIR$/project1/src/peer/Peer.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="812">
-              <caret line="62" column="8" selection-start-line="62" selection-start-column="8" selection-end-line="62" selection-end-column="18" />
+              <caret line="62" column="8" selection-start-line="62" selection-start-column="8" selection-end-line="62" selection-end-column="8" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1629#1630#0" expanded="true" />
-                <element signature="e#1654#1655#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -63,10 +71,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/project1/src/channels/MessageHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="555">
+            <state relative-caret-position="1095">
               <caret line="73" column="36" selection-start-line="73" selection-start-column="36" selection-end-line="73" selection-end-column="36" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -77,14 +85,20 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/project1/compile.bat">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="4" selection-start-line="4" selection-end-line="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/project1/src/channels/Channel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="36" column="28" selection-start-line="36" selection-start-column="21" selection-end-line="36" selection-end-column="28" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="570">
+              <caret line="38" selection-start-line="38" selection-end-line="38" />
             </state>
           </provider>
         </entry>
@@ -116,6 +130,7 @@
         <option value="$PROJECT_DIR$/project1/src/channels/Channel.java" />
         <option value="$PROJECT_DIR$/project1/src/peer/Peer.java" />
         <option value="$PROJECT_DIR$/project1/src/channels/MessageHandler.java" />
+        <option value="$PROJECT_DIR$/project1/compile.bat" />
       </list>
     </option>
   </component>
@@ -243,7 +258,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28340000" />
+    <option name="totallyTimeSpent" value="28501000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1301" height="772" extended-state="6" />
@@ -394,11 +409,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/project1/src/channels/Channel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="36" column="28" selection-start-line="36" selection-start-column="21" selection-end-line="36" selection-end-column="28" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="570">
+          <caret line="38" selection-start-line="38" selection-end-line="38" />
         </state>
       </provider>
     </entry>
@@ -428,24 +440,29 @@
     <entry file="file://$PROJECT_DIR$/project1/src/peer/Peer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="812">
-          <caret line="62" column="8" selection-start-line="62" selection-start-column="8" selection-end-line="62" selection-end-column="18" />
+          <caret line="62" column="8" selection-start-line="62" selection-start-column="8" selection-end-line="62" selection-end-column="8" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1629#1630#0" expanded="true" />
-            <element signature="e#1654#1655#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/project1/src/channels/MessageHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
+        <state relative-caret-position="1095">
           <caret line="73" column="36" selection-start-line="73" selection-start-column="36" selection-end-line="73" selection-end-column="36" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#364#365#0" expanded="true" />
             <element signature="e#404#405#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/project1/compile.bat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
         </state>
       </provider>
     </entry>

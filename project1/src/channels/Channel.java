@@ -1,19 +1,23 @@
 package channels;
 
+import peer.Peer;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
-public abstract class Channel implements Runnable {
+public class Channel implements Runnable {
 
     protected InetAddress address;
     protected int port;
     protected MulticastSocket socket;
+    protected Peer peer;
 
-    public Channel(String address, int port) throws IOException {
+    public Channel(String address, int port, Peer peer) throws IOException {
         this.address = InetAddress.getByName(address);
         this.port = port;
+        this.peer = peer;
 
         socket = new MulticastSocket(port);
         socket.setTimeToLive(1);
@@ -33,14 +37,7 @@ public abstract class Channel implements Runnable {
                 this.socket.receive(multicastPacket);
                 parseMessage(multicastPacket);
 
-
-                // 1 ioption
-                //this.parentPeer.MessageHandler(packet.getData(), packet.getLength());
-
-
-                //2 option
-                //Peer.getExec().execute(new MessageHandler(multicastPacket));
-
+                
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -50,11 +47,14 @@ public abstract class Channel implements Runnable {
 
     public void parseMessage(DatagramPacket packet) {
         String request = new String(packet.getData()).trim();
-            //System.out.println(request);
+        if(request.contains("PUTCHUNK")){
+            peer.handlePutChunk();
+        }else{
+            System.out.println(request);
+        }
     }
 
-    public void message(byte[] message) throws IOException{
-        System.out.println(message.length);
+    public synchronized void message(byte[] message) throws IOException{
         this.socket.send(new DatagramPacket(message, message.length, address, port));
     }
 
