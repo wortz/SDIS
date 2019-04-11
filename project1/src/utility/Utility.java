@@ -20,6 +20,7 @@ public class Utility {
 
   public static int CHUNK_SIZE = 64000;
 
+  public static long CAPACITY = 8000000;
 
 
   public static final String getFileSHA(File file) {

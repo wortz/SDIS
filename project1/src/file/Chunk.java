@@ -6,7 +6,7 @@ public class Chunk{
     private int replicationDegree;
     private String fileID;
     private String senderID;
-    private int act_replicationDegree;
+    private int actReplicationDegree;
 
     public Chunk(int index, byte[] data, int replicationDegree, String fileID, int senderID) {
         this.index = index;
@@ -14,6 +14,7 @@ public class Chunk{
         this.replicationDegree = replicationDegree;
         this.fileID = fileID;
         this.senderID = senderID;
+        this.actReplicationDegree = 0;
     }
 
     public int getIndex() {
