@@ -3,7 +3,7 @@ package channels;
 import java.net.DatagramPacket;
 
 public class Message  implements Runnable {
-    public static String CRLF = "\\r\\n";
+    public static String CRLF = "cona";
     public Channel multicastChannel;
     public byte[] message;
             
@@ -15,6 +15,7 @@ public class Message  implements Runnable {
     @Override
     public void run(){
         try {
+	    System.out.println("nova enviada: " + message.length);
             this.multicastChannel.message(message);
         }catch (Exception e) {
             System.err.println("Message exception: " + e.toString());

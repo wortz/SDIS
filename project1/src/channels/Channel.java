@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.Arrays;
 
 public class Channel implements Runnable {
 
@@ -20,7 +21,6 @@ public class Channel implements Runnable {
         this.peer = peer;
 
         socket = new MulticastSocket(port);
-        socket.setTimeToLive(1);
         socket.joinGroup(this.address);
 
         System.out.println("Joined Multicast Channel " + address + ":" + port);
@@ -35,23 +35,18 @@ public class Channel implements Runnable {
 
             try {
                 this.socket.receive(multicastPacket);
-                parseMessage(multicastPacket);
+                System.out.println(multicastPacket.getLength());
+                peer.receivedMessage(multicastPacket);
 
                 
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
-        //this.socket.close();
     }
 
     public void parseMessage(DatagramPacket packet) {
-        String request = new String(packet.getData()).trim();
-        if(request.contains("PUTCHUNK")){
-            peer.handlePutChunk();
-        }else{
-            System.out.println(request);
-        }
+        
     }
 
     public synchronized void message(byte[] message) throws IOException{

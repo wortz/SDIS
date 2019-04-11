@@ -6,38 +6,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import peer.Peer;
+
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
+import javax.xml.crypto.Data;
 import java.io.FileInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.BufferedReader;
 import java.net.DatagramPacket;
 import java.io.InputStreamReader;
-import peer.Peer;
 
 
 
 public class MessageHandler implements Runnable {
 
-    protected DatagramPacket packet;
-    protected String[] messageParts;
+    protected byte[] packet;
+    protected Peer peer;
 
-    public MessageHandler(DatagramPacket packet) {
+    public MessageHandler(byte[] packet,Peer peer) {
         this.packet = packet;
     }
 
     public void run() {
-        messageParts = managePacket(packet);
-
-        int sender_id = Integer.parseInt(messageParts[2]);
-
-        // if message comes from self ignore it
-        if(sender_id == Peer.getId()) return;
-
-        switch (messageParts[0]) {
+        String header=getHeaderPacket();
+        String[] headerSplit = header.split(" ");
+        if(headerSplit[2] == this.peer.getId()) {System.out.println("BOAS");return;}
+        switch (headerSplit[0]) {
             case "PUTCHUNK":
-                managePutchunk();
+                managePutchunk(header.length());
                 break;
             case "STORED":
                 manageStored();
@@ -59,8 +56,9 @@ public class MessageHandler implements Runnable {
     }
 
 
-    private synchronized void managePutchunk(){
-
+    private synchronized void managePutchunk(int headerLength){
+        byte[] body = new byte[(this.packet.length-headerLength-4)];
+        System.arraycopy(this.packet, headerLength+4, body, 0, body.length);
     }
 
     private synchronized void manageStored(){
@@ -83,10 +81,10 @@ public class MessageHandler implements Runnable {
 
     }
 
-    public static String[] managePacket(DatagramPacket packet){
+    public String getHeaderPacket(){
         String response = "";
 
-        ByteArrayInputStream stream = new ByteArrayInputStream(packet.getData());
+        ByteArrayInputStream stream = new ByteArrayInputStream(this.packet);
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
         try{
@@ -94,8 +92,7 @@ public class MessageHandler implements Runnable {
         }catch (IOException e){
             e.printStackTrace();
         }
-
-        return response.split(" ");
+        return response;
     }
 
 

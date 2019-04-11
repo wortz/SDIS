@@ -5,7 +5,8 @@ public class Chunk{
     private byte[] data;
     private int replicationDegree;
     private String fileID;
-    private int senderID;
+    private String senderID;
+    private int act_replicationDegree;
 
     public Chunk(int index, byte[] data, int replicationDegree, String fileID, int senderID) {
         this.index = index;

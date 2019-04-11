@@ -4,7 +4,6 @@ package utility;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.security.MessageDigest;
-import javax.xml.bind.DatatypeConverter;
 import java.security.NoSuchAlgorithmException;
 import java.math.BigInteger;
 import java.util.ArrayList;

@@ -10,6 +10,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.net.DatagramPacket;
+import java.util.Arrays;
 import java.io.File;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -18,7 +20,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class Peer implements RmiInterface {
     private static double version;
 
-    private static int id;
+    private String id;
     private String service_ap;
 
     private Channel MC;
@@ -32,7 +34,7 @@ public class Peer implements RmiInterface {
 
         this.version = Double.parseDouble(args[0]);
 
-        this.id = Integer.parseInt(args[1]);
+        this.id = args[1];
 
         this.service_ap = args[2];
         this.initRmi(service_ap);
@@ -50,16 +52,12 @@ public class Peer implements RmiInterface {
         MDB = new Channel(MDB_Address, MDB_Port,this);
         MDR = new Channel(MDR_Address, MDR_Port,this);
 
-        new Thread(MC).start();
-        new Thread(MDB).start();
-        new Thread(MDR).start();
-
-        exec.execute(MC);
+        //exec.execute(MC);
         exec.execute(MDB);
-        exec.execute(MDR);
+        //exec.execute(MDR);
     }
 
-    public static int getId() {
+    public String getId() {
         return id;
     }
 
@@ -76,6 +74,7 @@ public class Peer implements RmiInterface {
         try {
             String headerAux = "PUTCHUNK " + this.version + " " + this.id + " " + fileID + " ";
             ArrayList<byte[]> chunks = Utility.getChunks(path);
+            System.out.println(chunks.size());
             for (int i = 0; i < chunks.size(); i++) {
                 String restMessage = headerAux + (i + 1) + " " + replicationDegree + " " + Message.CRLF + Message.CRLF;
                 byte[] body = chunks.get(i);
@@ -89,6 +88,13 @@ public class Peer implements RmiInterface {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void receivedMessage(DatagramPacket packet){
+        int packet_length=packet.getLength();
+        byte[] msg= Arrays.copyOfRange(packet.getData(), 0, packet_length);
+        MessageHandler handler=new MessageHandler(msg,this);
+        exec.execute(handler);
     }
 
 
