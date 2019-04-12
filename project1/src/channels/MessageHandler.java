@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import peer.Peer;
+import utility.Utility;
 import file.*;
 
 import java.util.Random;
@@ -59,7 +60,19 @@ public class MessageHandler implements Runnable {
     private synchronized void managePutchunk(String[] headerSplit, int headerLength) {
         byte[] body = new byte[(this.packet.length - headerLength - 4)];
         System.arraycopy(this.packet, headerLength + 4, body, 0, body.length);
-
+        Chunk chunk = new Chunk(Integer.parseInt(headerSplit[4]), body, Integer.parseInt(headerSplit[5]), headerSplit[3], headerSplit[2]);
+        chunk.addStored(this.peer.getId());
+        this.peer.getStorage().storeChunk(chunk);
+        System.out.println("Stored chunk : " + headerSplit[4] + " from file : " + headerSplit[3]);
+        try{
+        String storedResponse = "Stored " + headerSplit[1] + " " + this.peer.getId() + " " + headerSplit[3] + " " + headerSplit[4] + Utility.CRLF + Utility.CRLF;
+        byte[] stored = storedResponse.getBytes("US-ASCII");
+            this.peer.getMC().message(stored);
+            System.out.println("Stored message sent of file: " + headerSplit[3] + " with chunk number : " + headerSplit[4]);
+        }catch(IOException e){
+            System.out.println("Error sending Stored message.");
+            e.printStackTrace();
+        }
     }
 
     private synchronized void manageStored() {

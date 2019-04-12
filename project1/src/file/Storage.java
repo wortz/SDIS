@@ -15,7 +15,7 @@ public class Storage implements Serializable {
 
 	private long memoryUsed;
 	private long memoryFree;
-	private ArrayList<Chunk> processingChunk;
+	private ArrayList<Chunk> processingChunks;
 
 	private ArrayList<Chunk> chunks;
 
@@ -23,6 +23,7 @@ public class Storage implements Serializable {
 		memoryFree = 10000000;
 		memoryUsed = 0;
 		chunks = new ArrayList<Chunk>();
+		processingChunks = new ArrayList<Chunk>();
 	}
 
 	public long getMemoryUsed() {
@@ -50,7 +51,7 @@ public class Storage implements Serializable {
 		for (int i = 0; i < this.chunks.size(); i++) {
 			if (chunks.get(i).compareChunk(chunk.getchunkID(), chunk.getFileID())) {
 				System.out.println("Already have that chunk");
-				return false;
+				return true;
 			}
 		}
 
@@ -73,13 +74,19 @@ public class Storage implements Serializable {
 
 	public synchronized void incRepDegree(int chunkID, String fileID,String id) {
 
+		for (int i = 0; i < this.processingChunks.size(); i++) {
+			if (processingChunks.get(i).compareChunk(chunkID, fileID)) {
+				processingChunks.get(i).addStored(id);
+				break;
+			}
+		}
+
 		for (int i = 0; i < this.chunks.size(); i++) {
 			if (chunks.get(i).compareChunk(chunkID, fileID)) {
 				chunks.get(i).addStored(id);
 				break;
 			}
 		}
-
 		/*
 		 * try { //Peer.saveDisk(); } catch (IOException e) { e.printStackTrace(); }
 		 */
@@ -87,17 +94,17 @@ public class Storage implements Serializable {
 	}
 
 	public synchronized boolean finishedDegree(int chunkID, String fileID){
-		for (int i = 0; i < this.chunks.size(); i++) {
-			if (chunks.get(i).compareChunk(chunkID, fileID)) {
-				return chunks.get(i).reachedDegree();
+		for (int i = 0; i < this.processingChunks.size(); i++) {
+			if (processingChunks.get(i).compareChunk(chunkID, fileID)) {
+				return processingChunks.get(i).reachedDegree();
 			}
 		}
-		System.out.println("Error, chunk not found on gettingactRepDegree");
+		System.out.println("Error, chunk not found on finishedDegree");
 		return false;
 	}
 
 	public synchronized void addProcessingChunk(Chunk chunk){
-		this.processingChunk.add(chunk);
+		this.processingChunks.add(chunk);
 	}
 
 }

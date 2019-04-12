@@ -17,6 +17,9 @@ public class Utility {
   public static int MAX_WAIT_TIME = 400;
 
   public static int PUTCHUNK_TRIES = 5;
+
+  public static String CRLF = "\r\n";
+  
   public static int INITIAL_WAIT_TIME=1000;
 
   public static int CHUNK_SIZE = 64000;
