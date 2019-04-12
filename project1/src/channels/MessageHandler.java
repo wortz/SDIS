@@ -33,7 +33,6 @@ public class MessageHandler implements Runnable {
         String[] headerSplit = header.split(" ");
         if (headerSplit[2].equals(this.peer.getId()))
             return;
-        System.out.print("Received : " + header);
         switch (headerSplit[0]) {
         case "PUTCHUNK":
             managePutchunk(headerSplit,header.length());

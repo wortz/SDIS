@@ -38,6 +38,7 @@ public class Peer implements RmiInterface {
         this.version = Double.parseDouble(args[0]);
 
         this.id = args[1];
+        this.storage = new Storage();
 
         this.service_ap = args[2];
         this.initRmi(service_ap);
@@ -92,7 +93,7 @@ public class Peer implements RmiInterface {
 
     @Override
     public void backupFile(String path, int replicationDegree) throws RemoteException {
-        Backup backup = new Backup(this, path, replicationDegree);
+        Backup backup = new Backup(this, path, replicationDegree, this.MDB);
         exec.execute(backup);
     }
 

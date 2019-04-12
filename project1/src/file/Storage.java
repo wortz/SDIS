@@ -15,6 +15,7 @@ public class Storage implements Serializable {
 
 	private long memoryUsed;
 	private long memoryFree;
+	private ArrayList<Chunk> processingChunk;
 
 	private ArrayList<Chunk> chunks;
 
@@ -70,11 +71,11 @@ public class Storage implements Serializable {
 		return false;
 	}
 
-	public synchronized void incRepDegree(String chunkID, String fileID) {
+	public synchronized void incRepDegree(int chunkID, String fileID,String id) {
 
 		for (int i = 0; i < this.chunks.size(); i++) {
 			if (chunks.get(i).compareChunk(chunkID, fileID)) {
-				chunks.get(i).incAdcDegree();
+				chunks.get(i).addStored(id);
 				break;
 			}
 		}
@@ -83,6 +84,20 @@ public class Storage implements Serializable {
 		 * try { //Peer.saveDisk(); } catch (IOException e) { e.printStackTrace(); }
 		 */
 
+	}
+
+	public synchronized boolean finishedDegree(int chunkID, String fileID){
+		for (int i = 0; i < this.chunks.size(); i++) {
+			if (chunks.get(i).compareChunk(chunkID, fileID)) {
+				return chunks.get(i).reachedDegree();
+			}
+		}
+		System.out.println("Error, chunk not found on gettingactRepDegree");
+		return false;
+	}
+
+	public synchronized void addProcessingChunk(Chunk chunk){
+		this.processingChunk.add(chunk);
 	}
 
 }
