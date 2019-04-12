@@ -9,15 +9,15 @@ import java.util.ArrayList;
 
 import utility.Utility;;
 
-public class Storage implements Serializable{
-		
-    private static final long serialVersionUID = 1L;
-    
-    private long memoryUsed;
+public class Storage implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private long memoryUsed;
 	private long memoryFree;
-	
+
 	private ArrayList<Chunk> chunks;
-	
+
 	public Storage() {
 		memoryFree = 10000000;
 		memoryUsed = 0;
@@ -25,61 +25,64 @@ public class Storage implements Serializable{
 	}
 
 	public long getMemoryUsed() {
-		return memoryUsed; 
-    }
-    
-    public long getMemoryFree(){
-        return memoryFree;
-    }
+		return memoryUsed;
+	}
 
-    public ArrayList<Chunk> getChunksStored() {
+	public long getMemoryFree() {
+		return memoryFree;
+	}
+
+	public ArrayList<Chunk> getChunksStored() {
 		return chunks;
 	}
-    
-    
+
 	public synchronized boolean storeChunk(Chunk chunk) {
 		byte[] chunk_data = chunk.getData();
-		
+
 		long tmp = memoryFree - chunk_data.length;
-		
-		if(tmp <0) {
-			System.out.println("Chunk can't be stored.");
+
+		if (tmp < 0) {
+			System.out.println("Chunk can't be stored(memory).");
 			return false;
 		}
-        
-        memoryFree -= chunk_data.length;
+
+		for (int i = 0; i < this.chunks.size(); i++) {
+			if (chunks.get(i).compareChunk(chunk.getchunkID(), chunk.getFileID())) {
+				System.out.println("Already have that chunk");
+				return false;
+			}
+		}
+
+
+		memoryFree -= chunk_data.length;
 		memoryUsed += chunk_data.length;
-        
-/*        
-		File folder = new File(-----);
 
-		if (!(folder.exists() && folder.isDirectory()))
-			folder.mkdir();
+		/*
+		 * File folder = new File(-----);
+		 * 
+		 * if (!(folder.exists() && folder.isDirectory())) folder.mkdir();
+		 * 
+		 * FileOutputStream out;
+		 * 
+		 * chunks.add(chunk);
+		 */
 
-		FileOutputStream out;
-		
-        chunks.add(chunk);
-        */
+		return false;
+	}
 
-        return false;
-    }
-    
-	public synchronized void incRepDegree(String chunkID,String fileID) {
-		
-		
-		for(int i=0; i< chunks.size();i++) {
-			if(chunks.get(i).compareChunk(chunkID, fileID)) {
+	public synchronized void incRepDegree(String chunkID, String fileID) {
+
+		for (int i = 0; i < this.chunks.size(); i++) {
+			if (chunks.get(i).compareChunk(chunkID, fileID)) {
 				chunks.get(i).incAdcDegree();
 				break;
 			}
 		}
-		
-		/*try {
-			//Peer.saveDisk();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
-	
+
+		/*
+		 * try { //Peer.saveDisk(); } catch (IOException e) { e.printStackTrace(); }
+		 */
+
 	}
-	
+
 }

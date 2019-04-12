@@ -117,6 +117,10 @@ public class Peer implements RmiInterface {
         }
     }
 
+    public synchronized Storage getStorage(){
+        return this.storage;
+    }
+
     public static void main(String args[]) throws IOException {
 
         if (args.length < 9) {

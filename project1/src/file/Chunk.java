@@ -1,6 +1,6 @@
 package file;
 
-public class Chunk{
+public class Chunk {
     private String chunkID;
     private byte[] data;
     private int replicationDegree;
@@ -29,13 +29,13 @@ public class Chunk{
         return replicationDegree;
     }
 
-    public boolean compareChunk(String chunkID, String fileID){
-        if(this.chunkID.equals(chunkID) && this.fileID.equals(fileID))
+    public boolean compareChunk(String chunkID, String fileID) {
+        if (this.chunkID.equals(chunkID) && this.fileID.equals(fileID))
             return true;
         return false;
     }
 
-    public void incAdcDegree(){
+    public void incAdcDegree() {
         this.actReplicationDegree++;
     }
 
@@ -46,6 +46,5 @@ public class Chunk{
     public String getSenderID() {
         return this.senderID;
     }
-
 
 }
