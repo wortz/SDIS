@@ -77,7 +77,7 @@ public class Storage implements Serializable {
 		for (int i = 0; i < this.processingChunks.size(); i++) {
 			if (processingChunks.get(i).compareChunk(chunkID, fileID)) {
 				processingChunks.get(i).addStored(id);
-				break;
+				return;
 			}
 		}
 

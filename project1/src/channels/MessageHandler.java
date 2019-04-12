@@ -39,7 +39,7 @@ public class MessageHandler implements Runnable {
             managePutchunk(headerSplit,header.length());
             break;
         case "STORED":
-            manageStored();
+            manageStored(headerSplit,header.length());
             break;
         case "GETCHUNK":
             manageGetChunk();
@@ -58,6 +58,7 @@ public class MessageHandler implements Runnable {
     }
 
     private synchronized void managePutchunk(String[] headerSplit, int headerLength) {
+        //PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF><Body>
         byte[] body = new byte[(this.packet.length - headerLength - 4)];
         System.arraycopy(this.packet, headerLength + 4, body, 0, body.length);
         Chunk chunk = new Chunk(Integer.parseInt(headerSplit[4]), body, Integer.parseInt(headerSplit[5]), headerSplit[3], headerSplit[2]);
@@ -65,7 +66,7 @@ public class MessageHandler implements Runnable {
         this.peer.getStorage().storeChunk(chunk);
         System.out.println("Stored chunk : " + headerSplit[4] + " from file : " + headerSplit[3]);
         try{
-        String storedResponse = "Stored " + headerSplit[1] + " " + this.peer.getId() + " " + headerSplit[3] + " " + headerSplit[4] + Utility.CRLF + Utility.CRLF;
+        String storedResponse = "STORED " + headerSplit[1] + " " + this.peer.getId() + " " + headerSplit[3] + " " + headerSplit[4] + Utility.CRLF + Utility.CRLF;
         byte[] stored = storedResponse.getBytes("US-ASCII");
             this.peer.getMC().message(stored);
             System.out.println("Stored message sent of file: " + headerSplit[3] + " with chunk number : " + headerSplit[4]);
@@ -75,8 +76,11 @@ public class MessageHandler implements Runnable {
         }
     }
 
-    private synchronized void manageStored() {
-
+    private synchronized void manageStored(String[] headerSplit, int headerLength) {
+        //STORED <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
+        this.peer.getStorage().incRepDegree(Integer.parseInt(headerSplit[4]), headerSplit[3], headerSplit[2]);
+        System.out.println(this.peer.getStorage().finishedDegree(Integer.parseInt(headerSplit[4]), headerSplit[3]));
+        System.out.println("Stored message received : " + headerSplit[2] + " " + headerSplit[3] + " " + headerSplit[4]);
     }
 
     private synchronized void manageGetChunk() {

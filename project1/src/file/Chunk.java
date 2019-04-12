@@ -42,6 +42,10 @@ public class Chunk {
     }
 
     public void addStored(String id) {
+        for(int i=0; i<this.IDStored.size();i++){
+            if(this.IDStored.get(i).equals(id))
+                return;
+        }
         this.IDStored.add(id);
     }
 

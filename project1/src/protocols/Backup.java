@@ -40,16 +40,18 @@ public class Backup implements Runnable{
             for (int i = 0; i < chunks.size(); i++) {
                 String restMessage = headerAux + (i + 1) + " " + this.replicationDegree + " " + Utility.CRLF + Utility.CRLF;
                 byte[] body = chunks.get(i);
+
                 byte[] header = restMessage.getBytes("US-ASCII");
                 byte[] message = new byte[header.length+body.length];
                 System.arraycopy(header, 0, message, 0, header.length);
                 System.arraycopy(body, 0, message, header.length, body.length);
                 Chunk chunk = new Chunk(i+1, body, this.replicationDegree, fileID, this.peer.getId());
                 peer.getStorage().addProcessingChunk(chunk);
+
                 int numberOfTries=0;
                 int waitTime=Utility.INITIAL_WAIT_TIME;
                 while(!peer.getStorage().finishedDegree(i+1, fileID)){
-                    if(numberOfTries==Utility.PUTCHUNK_TRIES){
+                    if(numberOfTries == Utility.PUTCHUNK_TRIES){
                         System.out.println("Failed to backup file: " + fileID);
                         return;
                     }

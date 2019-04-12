@@ -70,11 +70,11 @@ public class Utility {
       for (int i = 0; i < chunksNr; i++) {
         byte[] aux = new byte[CHUNK_SIZE];
         byte[] buf;
-        int bytesNr = bufferedFile.read(aux);
-        if(bytesNr == -1)
-          buf=new byte[0];
-        else if(bytesNr < CHUNK_SIZE)
-          buf = new byte[bytesNr];
+        int fileData = bufferedFile.read(aux);
+        if(fileData == -1)
+          buf = new byte[0];
+        else if(fileData < CHUNK_SIZE)
+          buf = new byte[fileData];
         else
           buf = new byte[CHUNK_SIZE];
         System.arraycopy(aux,0,buf,0,buf.length);

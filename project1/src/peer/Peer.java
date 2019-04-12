@@ -97,7 +97,7 @@ public class Peer implements RmiInterface {
         exec.execute(backup);
     }
 
-    public synchronized void receivedMessage(DatagramPacket packet){
+    public void receivedMessage(DatagramPacket packet){
         int packet_length=packet.getLength();
         byte[] msg= Arrays.copyOfRange(packet.getData(), 0, packet_length);
         MessageHandler handler=new MessageHandler(msg,this);
