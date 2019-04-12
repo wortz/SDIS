@@ -8,7 +8,7 @@ public class Chunk{
     private String senderID;
     private int actReplicationDegree;
 
-    public Chunk(int index, byte[] data, int replicationDegree, String fileID, int senderID) {
+    public Chunk(int index, byte[] data, int replicationDegree, String fileID, String senderID) {
         this.index = index;
         this.data = data;
         this.replicationDegree = replicationDegree;
@@ -33,7 +33,7 @@ public class Chunk{
         return fileID;
     }
 
-    public int getSenderID() {
+    public String getSenderID() {
         return senderID;
     }
 

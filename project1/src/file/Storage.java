@@ -60,6 +60,8 @@ public class Storage implements Serializable{
 		
         chunks.add(chunk);
         */
+
+        return false;
     }
     
 	public void incRepDegree(String chunk_id, int saves) {

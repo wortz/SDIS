@@ -3,6 +3,8 @@ package peer;
 import channels.*;
 import rmi.RmiInterface;
 import utility.Utility;
+import protocols.Backup;
+
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -61,6 +63,26 @@ public class Peer implements RmiInterface {
         return id;
     }
 
+    public double getVersion() {
+        return version;
+    }
+
+    public ScheduledExecutorService getExec() {
+        return exec;
+    }
+
+    public Channel getMDR() {
+        return MDR;
+    }
+
+    public Channel getMDB() {
+        return MDB;
+    }
+
+    public Channel getMC() {
+        return MC;
+    }
+
     @Override
     public String test() {
         System.out.println("Testing RMI");
@@ -69,25 +91,8 @@ public class Peer implements RmiInterface {
 
     @Override
     public void backupFile(String path, int replicationDegree) throws RemoteException {
-        File file = new File(path);
-        String fileID = Utility.getFileSHA(file);
-        try {
-            String headerAux = "PUTCHUNK " + this.version + " " + this.id + " " + fileID + " ";
-            ArrayList<byte[]> chunks = Utility.getChunks(path);
-            System.out.println(chunks.size());
-            for (int i = 0; i < chunks.size(); i++) {
-                String restMessage = headerAux + (i + 1) + " " + replicationDegree + " " + Message.CRLF + Message.CRLF;
-                byte[] body = chunks.get(i);
-                byte[] header = restMessage.getBytes("US-ASCII");
-                byte[] message = new byte[header.length+body.length];
-                System.arraycopy(header, 0, message, 0, header.length);
-                System.arraycopy(body, 0, message, header.length, body.length);
-                Message msg=new Message(message, this.MDB);
-                exec.execute(msg);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Backup backup = new Backup(this, path, replicationDegree);
+        exec.execute(backup);
     }
 
     public void receivedMessage(DatagramPacket packet){
