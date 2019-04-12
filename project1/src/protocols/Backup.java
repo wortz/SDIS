@@ -34,7 +34,6 @@ public class Backup implements Runnable{
         try {
             String headerAux = "PUTCHUNK " + peer.getVersion() + " " + peer.getId() + " " + fileID + " ";
             ArrayList<byte[]> chunks = Utility.getChunks(this.path);
-            System.out.println(chunks.size());
 
             for (int i = 0; i < chunks.size(); i++) {
                 String restMessage = headerAux + (i + 1) + " " + replicationDegree + " " + Message.CRLF + Message.CRLF;
@@ -43,6 +42,7 @@ public class Backup implements Runnable{
                 byte[] message = new byte[header.length+body.length];
                 System.arraycopy(header, 0, message, 0, header.length);
                 System.arraycopy(body, 0, message, header.length, body.length);
+                System.out.println("PUTCHUNK SENT OF FILE : " + fileID + " with chunk number : " + (i+1));
                 Message msg=new Message(message, peer.getMDB());
                 peer.getExec().execute(msg);
             }

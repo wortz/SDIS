@@ -4,6 +4,7 @@ import channels.*;
 import rmi.RmiInterface;
 import utility.Utility;
 import protocols.Backup;
+import file.Storage;
 
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class Peer implements RmiInterface {
     private Channel MC;
     private Channel MDB;
     private Channel MDR;
-
+    private Storage storage;
     private ScheduledExecutorService exec;
 
     private Peer(String args[]) throws IOException {
@@ -54,9 +55,9 @@ public class Peer implements RmiInterface {
         MDB = new Channel(MDB_Address, MDB_Port,this);
         MDR = new Channel(MDR_Address, MDR_Port,this);
 
-        //exec.execute(MC);
+        exec.execute(MC);
         exec.execute(MDB);
-        //exec.execute(MDR);
+        exec.execute(MDR);
     }
 
     public String getId() {
@@ -95,23 +96,11 @@ public class Peer implements RmiInterface {
         exec.execute(backup);
     }
 
-    public void receivedMessage(DatagramPacket packet){
+    public synchronized void receivedMessage(DatagramPacket packet){
         int packet_length=packet.getLength();
         byte[] msg= Arrays.copyOfRange(packet.getData(), 0, packet_length);
         MessageHandler handler=new MessageHandler(msg,this);
         exec.execute(handler);
-    }
-
-
-    public void handlePutChunk(){
-        String message = "Stored 1.0 1 1 " + Message.CRLF + Message.CRLF;
-        try{
-        byte[] buf = message.getBytes("US-ASCII");
-        Message control = new Message(buf,this.MC);
-        exec.execute(control);
-        }   catch(IOException e){
-            e.printStackTrace();
-        }
     }
 
     protected void initRmi(String service_ap) {

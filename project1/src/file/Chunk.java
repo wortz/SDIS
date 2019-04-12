@@ -1,15 +1,15 @@
 package file;
 
 public class Chunk{
-    private int index;
+    private String chunkID;
     private byte[] data;
     private int replicationDegree;
     private String fileID;
     private String senderID;
     private int actReplicationDegree;
 
-    public Chunk(int index, byte[] data, int replicationDegree, String fileID, String senderID) {
-        this.index = index;
+    public Chunk(String chunkID, byte[] data, int replicationDegree, String fileID, String senderID) {
+        this.chunkID = chunkID;
         this.data = data;
         this.replicationDegree = replicationDegree;
         this.fileID = fileID;
@@ -17,24 +17,34 @@ public class Chunk{
         this.actReplicationDegree = 0;
     }
 
-    public int getIndex() {
-        return index;
+    public String getchunkID() {
+        return this.chunkID;
     }
 
     public byte[] getData() {
-        return data;
+        return this.data;
     }
 
     public int getReplicationDegree() {
         return replicationDegree;
     }
 
+    public boolean compareChunk(String chunkID, String fileID){
+        if(this.chunkID.equals(chunkID) && this.fileID.equals(fileID))
+            return true;
+        return false;
+    }
+
+    public void incAdcDegree(){
+        this.actReplicationDegree++;
+    }
+
     public String getFileID() {
-        return fileID;
+        return this.fileID;
     }
 
     public String getSenderID() {
-        return senderID;
+        return this.senderID;
     }
 
 

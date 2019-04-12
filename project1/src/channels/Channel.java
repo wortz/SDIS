@@ -35,7 +35,6 @@ public class Channel implements Runnable {
 
             try {
                 this.socket.receive(multicastPacket);
-                System.out.println(multicastPacket.getLength());
                 peer.receivedMessage(multicastPacket);
 
                 

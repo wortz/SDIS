@@ -18,8 +18,8 @@ public class Storage implements Serializable{
 	
 	private ArrayList<Chunk> chunks;
 	
-	public Disk() {
-		memoryFree = CAPACITY;
+	public Storage() {
+		memoryFree = 10000000;
 		memoryUsed = 0;
 		chunks = new ArrayList<Chunk>();
 	}
@@ -37,7 +37,7 @@ public class Storage implements Serializable{
 	}
     
     
-	public boolean storeChunk(Chunk chunk) {
+	public synchronized boolean storeChunk(Chunk chunk) {
 		byte[] chunk_data = chunk.getData();
 		
 		long tmp = memoryFree - chunk_data.length;
@@ -64,20 +64,21 @@ public class Storage implements Serializable{
         return false;
     }
     
-	public void incRepDegree(String chunk_id, int saves) {
+	public synchronized void incRepDegree(String chunkID,String fileID) {
 		
 		
 		for(int i=0; i< chunks.size();i++) {
-			if(chunks.get(i).getID().equals(chunk_id)) {
-				chunks.get(i).setActualRepDegree(saves);
+			if(chunks.get(i).compareChunk(chunkID, fileID)) {
+				chunks.get(i).incAdcDegree();
+				break;
 			}
 		}
 		
-		try {
+		/*try {
 			//Peer.saveDisk();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 	
 	}
 	
