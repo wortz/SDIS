@@ -29,7 +29,6 @@ public class Channel implements Runnable {
     @Override
     public void run() {
         byte[] buf = new byte[65507];
-
         while(true) {
             DatagramPacket multicastPacket = new DatagramPacket(buf, buf.length);
 
@@ -42,10 +41,6 @@ public class Channel implements Runnable {
                 ex.printStackTrace();
             }
         }
-    }
-
-    public void parseMessage(DatagramPacket packet) {
-        
     }
 
     public synchronized void message(byte[] message) throws IOException{

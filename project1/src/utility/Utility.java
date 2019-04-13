@@ -1,6 +1,5 @@
 package utility;
 
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.security.MessageDigest;
@@ -10,8 +9,8 @@ import java.util.ArrayList;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Random;
 import java.nio.charset.StandardCharsets;
-
 
 public class Utility {
   public static int MAX_WAIT_TIME = 400;
@@ -19,13 +18,12 @@ public class Utility {
   public static int PUTCHUNK_TRIES = 5;
 
   public static String CRLF = "\r\n";
-  
-  public static int INITIAL_WAIT_TIME=1000;
+
+  public static int INITIAL_WAIT_TIME = 1000;
 
   public static int CHUNK_SIZE = 64000;
 
   public static long CAPACITY = 8000000;
-
 
   public static final String getFileSHA(File file) {
 
@@ -48,18 +46,12 @@ public class Utility {
     }
   }
 
-  static String sha256(String input) throws NoSuchAlgorithmException {
-    MessageDigest mDigest = MessageDigest.getInstance("SHA256");
-    byte[] result = mDigest.digest(input.getBytes());
-    StringBuffer sb = new StringBuffer();
-    for (int i = 0; i < result.length; i++) {
-      sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
-    }
-
-    return sb.toString();
+  public static int getRandomValue(int value){
+    Random gerador = new Random();
+    return gerador.nextInt(value+1);
   }
 
-  public static ArrayList<byte[]> getChunks(String path) throws IOException{
+  public static ArrayList<byte[]> getChunks(String path) throws IOException {
     ArrayList<byte[]> result = new ArrayList<byte[]>();
     File file = new File(path);
     long size = file.length();
@@ -71,19 +63,19 @@ public class Utility {
         byte[] aux = new byte[CHUNK_SIZE];
         byte[] buf;
         int fileData = bufferedFile.read(aux);
-        if(fileData == -1)
+        if (fileData == -1)
           buf = new byte[0];
-        else if(fileData < CHUNK_SIZE)
+        else if (fileData < CHUNK_SIZE)
           buf = new byte[fileData];
         else
           buf = new byte[CHUNK_SIZE];
-        System.arraycopy(aux,0,buf,0,buf.length);
+        System.arraycopy(aux, 0, buf, 0, buf.length);
         result.add(buf);
       }
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
-    
+
     return result;
   }
 }

@@ -45,11 +45,14 @@ public class Backup implements Runnable{
                 byte[] message = new byte[header.length+body.length];
                 System.arraycopy(header, 0, message, 0, header.length);
                 System.arraycopy(body, 0, message, header.length, body.length);
+
+                //Creates a chunk and adds it to the processing array in storage
                 Chunk chunk = new Chunk(i+1, body, this.replicationDegree, fileID, this.peer.getId());
                 peer.getStorage().addProcessingChunk(chunk);
 
                 int numberOfTries=0;
                 int waitTime=Utility.INITIAL_WAIT_TIME;
+                //while that chunk in processing array is not with desired rep degree it continues to try
                 while(!peer.getStorage().finishedDegree(i+1, fileID)){
                     if(numberOfTries == Utility.PUTCHUNK_TRIES){
                         System.out.println("Failed to backup file: " + fileID);
@@ -61,6 +64,7 @@ public class Backup implements Runnable{
                     Thread.sleep(waitTime);
                     waitTime*=2;
                 }
+                peer.getStorage().removeProcessingChunk(chunk);
             }
         } catch (IOException e) {
             e.printStackTrace();

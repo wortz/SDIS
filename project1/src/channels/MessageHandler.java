@@ -25,6 +25,7 @@ public class MessageHandler implements Runnable {
     protected Peer peer;
 
     public MessageHandler(byte[] packet, Peer peer) {
+        System.out.println("Um handler");
         this.packet = packet;
         this.peer = peer;
     }
@@ -68,8 +69,9 @@ public class MessageHandler implements Runnable {
         try{
         String storedResponse = "STORED " + headerSplit[1] + " " + this.peer.getId() + " " + headerSplit[3] + " " + headerSplit[4] + Utility.CRLF + Utility.CRLF;
         byte[] stored = storedResponse.getBytes("US-ASCII");
-            this.peer.getMC().message(stored);
-            System.out.println("Stored message sent of file: " + headerSplit[3] + " with chunk number : " + headerSplit[4]);
+        Message storedMessage = new Message(stored, this.peer.getMC());
+        this.peer.getExec().schedule(storedMessage, Utility.getRandomValue(Utility.MAX_WAIT_TIME), TimeUnit.MILLISECONDS);
+        System.out.println("Stored message sent of file: " + headerSplit[3] + " with chunk number : " + headerSplit[4]);
         }catch(IOException e){
             System.out.println("Error sending Stored message.");
             e.printStackTrace();
@@ -79,7 +81,6 @@ public class MessageHandler implements Runnable {
     private synchronized void manageStored(String[] headerSplit, int headerLength) {
         //STORED <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
         this.peer.getStorage().incRepDegree(Integer.parseInt(headerSplit[4]), headerSplit[3], headerSplit[2]);
-        System.out.println(this.peer.getStorage().finishedDegree(Integer.parseInt(headerSplit[4]), headerSplit[3]));
         System.out.println("Stored message received : " + headerSplit[2] + " " + headerSplit[3] + " " + headerSplit[4]);
     }
 

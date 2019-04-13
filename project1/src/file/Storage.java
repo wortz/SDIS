@@ -55,7 +55,6 @@ public class Storage implements Serializable {
 			}
 		}
 
-
 		memoryFree -= chunk_data.length;
 		memoryUsed += chunk_data.length;
 
@@ -72,7 +71,7 @@ public class Storage implements Serializable {
 		return false;
 	}
 
-	public synchronized void incRepDegree(int chunkID, String fileID,String id) {
+	public synchronized void incRepDegree(int chunkID, String fileID, String id) {
 
 		for (int i = 0; i < this.processingChunks.size(); i++) {
 			if (processingChunks.get(i).compareChunk(chunkID, fileID)) {
@@ -93,7 +92,18 @@ public class Storage implements Serializable {
 
 	}
 
-	public synchronized boolean finishedDegree(int chunkID, String fileID){
+	public synchronized void removeProcessingChunk(Chunk chunk) {
+		for (int i = 0; i < processingChunks.size(); i++) {
+			if (processingChunks.get(i).compareChunk(chunk.getchunkID(), chunk.getFileID())) {
+				processingChunks.remove(i);
+				System.out.println("chunk removed");
+				return;
+			}
+		}
+		System.out.println("Chunk not found to be removed.");
+	}
+
+	public synchronized boolean finishedDegree(int chunkID, String fileID) {
 		for (int i = 0; i < this.processingChunks.size(); i++) {
 			if (processingChunks.get(i).compareChunk(chunkID, fileID)) {
 				return processingChunks.get(i).reachedDegree();
@@ -103,7 +113,7 @@ public class Storage implements Serializable {
 		return false;
 	}
 
-	public synchronized void addProcessingChunk(Chunk chunk){
+	public synchronized void addProcessingChunk(Chunk chunk) {
 		this.processingChunks.add(chunk);
 	}
 
