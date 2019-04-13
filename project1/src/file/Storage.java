@@ -17,6 +17,7 @@ public class Storage implements Serializable {
 	private long memoryUsed;
 	private long memoryFree;
 	private ArrayList<Chunk> processingChunks;
+	private ArrayList<Chunk> restoreChunks;
 
 	private ArrayList<Chunk> chunks;
 
@@ -26,6 +27,7 @@ public class Storage implements Serializable {
 		chunks = new ArrayList<Chunk>();
 		processingChunks = new ArrayList<Chunk>();
 		filesStored = new ArrayList<FileData>();
+		restoreChunks = new ArrayList<Chunk>();
 	}
 
 	public long getMemoryUsed() {
@@ -42,6 +44,45 @@ public class Storage implements Serializable {
 
 	public ArrayList<FileData> getStoredFiles(){
 		return this.filesStored;
+	}
+
+	public ArrayList<Chunk> getRestoredChunks(){
+		return restoreChunks;
+	}
+
+	public synchronized boolean alreadyRestored(Chunk chunk){
+		for(int i = 0; i < this.restoreChunks.size(); i++){
+			if(this.restoreChunks.get(i).compareChunk(chunk.getchunkID(), chunk.getFileID())){
+				this.restoreChunks.remove(i);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public synchronized boolean restored(int chunkID, String fileID){
+		for(Chunk resChunk : restoreChunks){
+			if(resChunk.compareChunk(chunkID, fileID))
+				return true;
+		}
+		return false;
+	}
+
+	public synchronized void addRestored(Chunk chunk){
+		for(int i = 0; i < this.restoreChunks.size(); i++){
+			if(this.restoreChunks.get(i).compareChunk(chunk.getchunkID(), chunk.getFileID()))
+				return;
+		}
+		restoreChunks.add(chunk);
+		return;
+	}
+
+	public synchronized Chunk getRestoredChunk(int chunkNr,String fileID){
+		for(Chunk resChunk : restoreChunks){
+			if(resChunk.compareChunk(chunkNr, fileID))
+				return resChunk;
+		}
+		return null;
 	}
 
 	public synchronized boolean storeChunk(Chunk chunk) {

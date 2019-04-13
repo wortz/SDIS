@@ -63,7 +63,7 @@ public class MessageHandler implements Runnable {
         String fileId = headerSplit[3];
         int chunkNr = Integer.parseInt(headerSplit[4]);
         int repDegree = Integer.parseInt(headerSplit[5]);
-       
+
         byte[] body = new byte[(this.packet.length - headerLength - 4)];
         System.arraycopy(this.packet, headerLength + 4, body, 0, body.length);
 
@@ -115,28 +115,32 @@ public class MessageHandler implements Runnable {
 
     private synchronized void manageGetChunk(String[] headerSplit) {
         // GETCHUNK <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
-        
         double version = Double.parseDouble(headerSplit[1]);
         String senderID = headerSplit[2];
         String fileId = headerSplit[3];
         int chunkNr = Integer.parseInt(headerSplit[4]);
         try {
 
-            for(Chunk chunk : Peer.getStorage().getChunksStored()){
-                if(chunk.compareChunk(chunkNr, fileId)){
+            for (Chunk chunk : Peer.getStorage().getChunksStored()) {
+                if (chunk.compareChunk(chunkNr, fileId)) {
                     byte[] body = chunk.getData();
 
-                    String headerMessage = "CHUNK " + headerSplit[1] + " " + Peer.getId() + " " + fileId + " " + chunkNr
-                        + Utility.CRLF + Utility.CRLF;
+                    String headerMessage = "CHUNK " + version + " " + Peer.getId() + " " + fileId + " " + chunkNr
+                            + Utility.CRLF + Utility.CRLF;
                     byte[] header = headerMessage.getBytes("US-ASCII");
-                    byte[] message = new byte[header.length+body.length];
+                    byte[] message = new byte[header.length + body.length];
                     System.arraycopy(header, 0, message, 0, header.length);
                     System.arraycopy(body, 0, message, header.length, body.length);
-
-                    Peer.getMDR().message(message);
+                    Thread.sleep(Utility.getRandomValue(Utility.MAX_WAIT_TIME));
+                    if (!Peer.getStorage().alreadyRestored(chunk))
+                        System.out.println("Sending chunk message");
+                        Peer.getMDR().message(message);
+                    break;
                 }
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -153,10 +157,7 @@ public class MessageHandler implements Runnable {
         System.arraycopy(this.packet, headerLength + 4, body, 0, body.length);
 
         Chunk chunk = new Chunk(chunkNr, body, 1, fileId, senderID);
-
-        //save Chunk in file I think
-
-
+        Peer.getStorage().addRestored(chunk);
 
     }
 
@@ -171,8 +172,8 @@ public class MessageHandler implements Runnable {
         }
         String pathFileId = pathBackup + "/" + headerSplit[3];
         File pathToFile = new File(pathFileId);
-        File[] pathFiles= pathToFile.listFiles();
-        if(pathFiles != null){
+        File[] pathFiles = pathToFile.listFiles();
+        if (pathFiles != null) {
             for (File file : pathFiles) {
                 System.out.println("Deleting chunkNr : " + file.getPath());
                 file.delete();
