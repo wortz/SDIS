@@ -96,7 +96,6 @@ public class Storage implements Serializable {
 		for (int i = 0; i < processingChunks.size(); i++) {
 			if (processingChunks.get(i).compareChunk(chunk.getchunkID(), chunk.getFileID())) {
 				processingChunks.remove(i);
-				System.out.println("chunk removed");
 				return;
 			}
 		}

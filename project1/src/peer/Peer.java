@@ -93,7 +93,7 @@ public class Peer implements RmiInterface {
 
     @Override
     public void backupFile(String path, int replicationDegree) throws RemoteException {
-        Backup backup = new Backup(path, replicationDegree, this.MDB);
+        Backup backup = new Backup(path, replicationDegree);
         exec.execute(backup);
     }
 

@@ -34,10 +34,10 @@ public class MessageHandler implements Runnable {
             return;
         switch (headerSplit[0]) {
         case "PUTCHUNK":
-            managePutchunk(headerSplit,header.length());
+            managePutchunk(headerSplit, header.length());
             break;
         case "STORED":
-            manageStored(headerSplit,header.length());
+            manageStored(headerSplit, header.length());
             break;
         case "GETCHUNK":
             manageGetChunk();
@@ -56,26 +56,52 @@ public class MessageHandler implements Runnable {
     }
 
     private synchronized void managePutchunk(String[] headerSplit, int headerLength) {
-        //PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF><Body>
+        // PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg>
+        // <CRLF><CRLF><Body>
+        double version = Double.parseDouble(headerSplit[1]);
+        String senderID = headerSplit[2];
+        String fileId = headerSplit[3];
+        int chunkNr = Integer.parseInt(headerSplit[4]);
+        int repDegree = Integer.parseInt(headerSplit[5]);
         byte[] body = new byte[(this.packet.length - headerLength - 4)];
         System.arraycopy(this.packet, headerLength + 4, body, 0, body.length);
-        Chunk chunk = new Chunk(Integer.parseInt(headerSplit[4]), body, Integer.parseInt(headerSplit[5]), headerSplit[3], headerSplit[2]);
+        Chunk chunk = new Chunk(chunkNr, body, repDegree, fileId, senderID);
         chunk.addStored(Peer.getId());
         Peer.getStorage().storeChunk(chunk);
-        System.out.println("Stored chunk : " + headerSplit[4] + " from file : " + headerSplit[3]);
-        try{
-        String storedResponse = "STORED " + headerSplit[1] + " " + Peer.getId() + " " + headerSplit[3] + " " + headerSplit[4] + Utility.CRLF + Utility.CRLF;
-        byte[] stored = storedResponse.getBytes("US-ASCII");
-        Message storedMessage = new Message(stored, Peer.getMC());
-        Peer.getExec().schedule(storedMessage, Utility.getRandomValue(Utility.MAX_WAIT_TIME), TimeUnit.MILLISECONDS);
-        }catch(IOException e){
+        try {
+            String storedResponse = "STORED " + headerSplit[1] + " " + Peer.getId() + " " + fileId + " "
+                    + chunkNr + Utility.CRLF + Utility.CRLF;
+            byte[] stored = storedResponse.getBytes("US-ASCII");
+            Message storedMessage = new Message(stored, Peer.getMC());
+            Peer.getExec().schedule(storedMessage, Utility.getRandomValue(Utility.MAX_WAIT_TIME),
+                    TimeUnit.MILLISECONDS);
+
+            String pathBackup = "../PeerStorage/peer" + Peer.getId() + "/" + "backup";
+            File backupDir = new File(pathBackup);
+            if (!backupDir.exists()) {
+                backupDir.mkdirs();
+            }
+            String pathFileId = pathBackup + "/" + fileId;
+            File pathToFile = new File(pathFileId);
+            if (!pathToFile.exists()) {
+                pathToFile.mkdir();
+            }
+
+            String chunkDir = pathToFile + "/" + "chunk" + chunkNr;
+            File chunkFile = new File(chunkDir);
+            if(!chunkFile.exists()){
+                FileOutputStream fos = new FileOutputStream(chunkDir);
+                fos.write(body);
+            }
+
+        } catch (IOException e) {
             System.out.println("Error sending Stored message.");
             e.printStackTrace();
         }
     }
 
     private synchronized void manageStored(String[] headerSplit, int headerLength) {
-        //STORED <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
+        // STORED <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
         Peer.getStorage().incRepDegree(Integer.parseInt(headerSplit[4]), headerSplit[3], headerSplit[2]);
     }
 

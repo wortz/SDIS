@@ -17,13 +17,11 @@ public class Backup implements Runnable{
 	
 	protected String path;
 	protected int replicationDegree;
-    protected Channel MDB;
 
 	
-	public Backup(String file_path, int replicationDegree, Channel MDB) {
+	public Backup(String file_path, int replicationDegree) {
 		this.path = file_path;
 		this.replicationDegree = replicationDegree;
-        this.MDB=MDB;
 	}
 
 	@Override
@@ -56,8 +54,7 @@ public class Backup implements Runnable{
                         System.out.println("Failed to backup file: " + fileID);
                         return;
                     }
-                    sendMessage(message);
-                    System.out.println("PUTCHUNK SENT OF FILE : " + fileID + " with chunk number : " + (i+1));
+                    Peer.getMDB().message(message);
                     numberOfTries++;
                     Thread.sleep(waitTime);
                     waitTime*=2;
@@ -72,9 +69,4 @@ public class Backup implements Runnable{
 		
 	
     }
-    
-    public synchronized void sendMessage(byte[] message) throws IOException{
-            this.MDB.message(message);
-    }
-	
 }

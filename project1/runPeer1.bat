@@ -1,2 +1,2 @@
 cd ./bin
-java -classpath . -Djava.net.preferIPv4Stack=true -Djava.rmi.server.codebase=file:./ peer/Peer 1.0 2 peer2 232.1.1.0 4465 232.1.1.1 4466 232.1.1.1 4467 &
+java peer/Peer 1.0 1 peer1 224.0.0.1 8001 224.0.0.2 8002 224.0.0.3 8003

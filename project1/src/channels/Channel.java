@@ -28,7 +28,6 @@ public class Channel implements Runnable {
     public void run() {
         byte[] buf = new byte[65507];
         while(true) {
-            this.socket.joinGroup(this.address);
             DatagramPacket multicastPacket = new DatagramPacket(buf, buf.length);
 
             try {
@@ -36,7 +35,6 @@ public class Channel implements Runnable {
                 byte[] msg= Arrays.copyOfRange(multicastPacket.getData(), 0, multicastPacket.getLength());
                 MessageHandler handler=new MessageHandler(msg);
                 Peer.getExec().execute(handler);
-                this.socket.close();
 
                 
             } catch (IOException ex) {
