@@ -12,6 +12,7 @@ import utility.Utility;;
 public class Storage implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private ArrayList<FileData> filesStored;
 
 	private long memoryUsed;
 	private long memoryFree;
@@ -24,6 +25,7 @@ public class Storage implements Serializable {
 		memoryUsed = 0;
 		chunks = new ArrayList<Chunk>();
 		processingChunks = new ArrayList<Chunk>();
+		filesStored = new ArrayList<FileData>();
 	}
 
 	public long getMemoryUsed() {
@@ -34,8 +36,12 @@ public class Storage implements Serializable {
 		return memoryFree;
 	}
 
-	public ArrayList<Chunk> getChunksStored() {
+	public synchronized ArrayList<Chunk> getChunksStored() {
 		return chunks;
+	}
+
+	public ArrayList<FileData> getStoredFiles(){
+		return this.filesStored;
 	}
 
 	public synchronized boolean storeChunk(Chunk chunk) {
@@ -69,6 +75,23 @@ public class Storage implements Serializable {
 		 */
 
 		return false;
+	}
+
+	public synchronized void deleteAllChunksOfFile(String fileID){
+		for(int i=0; i<this.chunks.size();i++){
+			if(this.chunks.get(i).getFileID().equals(fileID)){
+				chunks.remove(i);
+				i--;
+			}
+		}
+	}
+	
+	public synchronized void addFileData(FileData filedata){
+		this.filesStored.add(filedata);
+	}
+
+	public synchronized void removeFileData(int i){
+		this.filesStored.remove(i);
 	}
 
 	public synchronized void incRepDegree(int chunkID, String fileID, String id) {
@@ -124,6 +147,15 @@ public class Storage implements Serializable {
 
 	public synchronized void addProcessingChunk(Chunk chunk) {
 		this.processingChunks.add(chunk);
+	}
+
+	public synchronized int getChunkCurDegree(Chunk chunk){
+		for (int i = 0; i < this.processingChunks.size(); i++) {
+			if (processingChunks.get(i).compareChunk(chunk.getchunkID(), chunk.getFileID())) {
+				return chunk.getActDegree();
+			}
+		}
+		return 0;
 	}
 
 }

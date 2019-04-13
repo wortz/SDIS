@@ -37,7 +37,7 @@ public class MessageHandler implements Runnable {
             managePutchunk(headerSplit, header.length());
             break;
         case "STORED":
-            manageStored(headerSplit, header.length());
+            manageStored(headerSplit);
             break;
         case "GETCHUNK":
             manageGetChunk();
@@ -46,7 +46,7 @@ public class MessageHandler implements Runnable {
             manageChunk();
             break;
         case "DELETE":
-            manageDelete();
+            manageDelete(headerSplit);
             break;
         case "REMOVED":
             manageRemoved();
@@ -93,19 +93,19 @@ public class MessageHandler implements Runnable {
                     fos.write(body);
                 }
                 Peer.getStorage().updateProcessingChunk(chunk);
-            }else{
+            } else {
                 Peer.getStorage().removeProcessingChunk(chunk);
             }
 
         } catch (IOException e) {
             System.out.println("Error sending Stored message.");
             e.printStackTrace();
-        }catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    private synchronized void manageStored(String[] headerSplit, int headerLength) {
+    private synchronized void manageStored(String[] headerSplit) {
         // STORED <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
         System.out.println("Received stored " + headerSplit[4]);
         Peer.getStorage().incRepDegree(Integer.parseInt(headerSplit[4]), headerSplit[3], headerSplit[2]);
@@ -119,8 +119,25 @@ public class MessageHandler implements Runnable {
 
     }
 
-    private synchronized void manageDelete() {
-
+    private synchronized void manageDelete(String[] headerSplit) {
+        // DELETE <Version> <SenderId> <FileId> <CRLF><CRLF>
+        System.out.println("Received delete of file : " + headerSplit[3]);
+        Peer.getStorage().deleteAllChunksOfFile(headerSplit[3]);
+        String pathBackup = "../PeerStorage/peer" + Peer.getId() + "/" + "backup";
+        File backupDir = new File(pathBackup);
+        if (!backupDir.exists()) {
+            backupDir.mkdirs();
+        }
+        String pathFileId = pathBackup + "/" + headerSplit[3];
+        File pathToFile = new File(pathFileId);
+        File[] pathFiles= pathToFile.listFiles();
+        if(pathFiles != null){
+            for (int i = 0; i< pathFiles.length;i++) {
+                System.out.println("um foi");
+                pathFiles[i].delete();
+            }
+        }
+        pathToFile.delete();
     }
 
     private synchronized void manageRemoved() {

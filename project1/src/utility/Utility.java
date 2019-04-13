@@ -21,6 +21,8 @@ public class Utility {
 
   public static int INITIAL_WAIT_TIME = 1000;
 
+  public static int DELETE_TRIES = 5;
+
   public static int CHUNK_SIZE = 64000;
 
   public static long CAPACITY = 8000000;

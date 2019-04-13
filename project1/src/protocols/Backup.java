@@ -28,6 +28,8 @@ public class Backup implements Runnable{
 	public void run() {
 		File file = new File(this.path);
         String fileID = Utility.getFileSHA(file);
+        //creates filedata
+        FileData filedata = new FileData(this.path, fileID);
 
         try {
             String headerAux = "PUTCHUNK " + Peer.getVersion() + " " + Peer.getId() + " " + fileID + " ";
@@ -52,6 +54,7 @@ public class Backup implements Runnable{
                 while(!Peer.getStorage().finishedDegree(i+1, fileID)){
                     if(numberOfTries == Utility.PUTCHUNK_TRIES){
                         System.out.println("Failed to backup file: " + fileID);
+                        Peer.getStorage().removeProcessingChunk(chunk);
                         return;
                     }
                     System.out.println("PutChunk : " + (i + 1));
@@ -60,8 +63,11 @@ public class Backup implements Runnable{
                     Thread.sleep(waitTime);
                     waitTime*=2;
                 }
+                //adds the current degree of chunk to filedata
+                filedata.addChunk(Peer.getStorage().getChunkCurDegree(chunk));
                 Peer.getStorage().removeProcessingChunk(chunk);
             }
+            Peer.getStorage().addFileData(filedata);
         } catch (IOException e) {
             e.printStackTrace();
         }catch(InterruptedException e){

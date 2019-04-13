@@ -3,7 +3,7 @@ package peer;
 import channels.*;
 import rmi.RmiInterface;
 import utility.Utility;
-import protocols.Backup;
+import protocols.*;
 import file.Storage;
 
 
@@ -33,7 +33,7 @@ public class Peer implements RmiInterface {
     private static ScheduledExecutorService exec;
 
     private Peer(String args[]) throws IOException {
-        exec = new ScheduledThreadPoolExecutor(100);
+        exec = new ScheduledThreadPoolExecutor(10);
 
         version = Double.parseDouble(args[0]);
 
@@ -95,6 +95,12 @@ public class Peer implements RmiInterface {
     public void backupFile(String path, int replicationDegree) throws RemoteException {
         Backup backup = new Backup(path, replicationDegree);
         exec.execute(backup);
+    }
+
+    @Override
+    public void deleteFile(String path) throws RemoteException {
+        Delete delete = new Delete(path);
+        exec.execute(delete);
     }
 
     protected void initRmi(String service_ap) {

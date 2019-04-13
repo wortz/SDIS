@@ -19,29 +19,33 @@ public class Chunk {
         this.IDStored = new ArrayList<String>();
     }
 
-    public int getchunkID() {
+    public synchronized int getchunkID() {
         return this.chunkID;
     }
 
-    public byte[] getData() {
+    public synchronized byte[] getData() {
         return this.data;
     }
 
-    public int getReplicationDegree() {
+    public synchronized int getReplicationDegree() {
         return this.replicationDegree;
     }
 
-    public boolean reachedDegree(){
+    public synchronized int getActDegree(){
+        return this.IDStored.size();
+    }
+
+    public synchronized boolean reachedDegree(){
         return (this.IDStored.size()==this.replicationDegree);
     }
 
-    public boolean compareChunk(int chunkID, String fileID) {
+    public synchronized boolean compareChunk(int chunkID, String fileID) {
         if (this.chunkID == chunkID && this.fileID.equals(fileID))
             return true;
         return false;
     }
 
-    public void addStored(String id) {
+    public synchronized void addStored(String id) {
         for(int i=0; i<this.IDStored.size();i++){
             if(this.IDStored.get(i).equals(id))
                 return;
@@ -49,11 +53,11 @@ public class Chunk {
         this.IDStored.add(id);
     }
 
-    public String getFileID() {
+    public synchronized String getFileID() {
         return this.fileID;
     }
 
-    public String getSenderID() {
+    public synchronized String getSenderID() {
         return this.senderID;
     }
 
