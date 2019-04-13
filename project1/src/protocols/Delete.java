@@ -20,9 +20,9 @@ public class Delete implements Runnable{
       this.file_path = file_path;
     }
     
+    @Override
     public void run() {
       for(int i = 0; i < Peer.getStorage().getStoredFiles().size(); i++){
-      System.out.println(Peer.getStorage().getStoredFiles().get(i).getPath());
         if(Peer.getStorage().getStoredFiles().get(i).getPath().equals(this.file_path)){
           for(int t=0;t<Utility.DELETE_TRIES;t++){
             String header = "DELETE " + Peer.getVersion() + " " + Peer.getId() + " " + Peer.getStorage().getStoredFiles().get(i).getfileID() + " " + Utility.CRLF + Utility.CRLF;

@@ -132,9 +132,9 @@ public class MessageHandler implements Runnable {
         File pathToFile = new File(pathFileId);
         File[] pathFiles= pathToFile.listFiles();
         if(pathFiles != null){
-            for (int i = 0; i< pathFiles.length;i++) {
-                System.out.println("um foi");
-                pathFiles[i].delete();
+            for (File file : pathFiles) {
+                System.out.println("Deleting chunkNr : " + file.getPath());
+                file.delete();
             }
         }
         pathToFile.delete();
