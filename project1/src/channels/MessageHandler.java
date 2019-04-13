@@ -66,42 +66,48 @@ public class MessageHandler implements Runnable {
         byte[] body = new byte[(this.packet.length - headerLength - 4)];
         System.arraycopy(this.packet, headerLength + 4, body, 0, body.length);
         Chunk chunk = new Chunk(chunkNr, body, repDegree, fileId, senderID);
-        chunk.addStored(Peer.getId());
-        Peer.getStorage().storeChunk(chunk);
+        Peer.getStorage().addProcessingChunk(chunk);
         try {
-            String storedResponse = "STORED " + headerSplit[1] + " " + Peer.getId() + " " + fileId + " "
-                    + chunkNr + Utility.CRLF + Utility.CRLF;
+            String storedResponse = "STORED " + headerSplit[1] + " " + Peer.getId() + " " + fileId + " " + chunkNr
+                    + Utility.CRLF + Utility.CRLF;
             byte[] stored = storedResponse.getBytes("US-ASCII");
-            Message storedMessage = new Message(stored, Peer.getMC());
-            Peer.getExec().schedule(storedMessage, Utility.getRandomValue(Utility.MAX_WAIT_TIME),
-                    TimeUnit.MILLISECONDS);
+            Thread.sleep(Utility.getRandomValue(Utility.MAX_WAIT_TIME));
+            if (!Peer.getStorage().finishedDegree(chunkNr, fileId)) {
+                System.out.println("Stored : " + chunkNr);
+                Peer.getMC().message(stored);
+                String pathBackup = "../PeerStorage/peer" + Peer.getId() + "/" + "backup";
+                File backupDir = new File(pathBackup);
+                if (!backupDir.exists()) {
+                    backupDir.mkdirs();
+                }
+                String pathFileId = pathBackup + "/" + fileId;
+                File pathToFile = new File(pathFileId);
+                if (!pathToFile.exists()) {
+                    pathToFile.mkdir();
+                }
 
-            String pathBackup = "../PeerStorage/peer" + Peer.getId() + "/" + "backup";
-            File backupDir = new File(pathBackup);
-            if (!backupDir.exists()) {
-                backupDir.mkdirs();
-            }
-            String pathFileId = pathBackup + "/" + fileId;
-            File pathToFile = new File(pathFileId);
-            if (!pathToFile.exists()) {
-                pathToFile.mkdir();
-            }
-
-            String chunkDir = pathToFile + "/" + "chunk" + chunkNr;
-            File chunkFile = new File(chunkDir);
-            if(!chunkFile.exists()){
-                FileOutputStream fos = new FileOutputStream(chunkDir);
-                fos.write(body);
+                String chunkDir = pathToFile + "/" + "chunk" + chunkNr;
+                File chunkFile = new File(chunkDir);
+                if (!chunkFile.exists()) {
+                    FileOutputStream fos = new FileOutputStream(chunkDir);
+                    fos.write(body);
+                }
+                Peer.getStorage().updateProcessingChunk(chunk);
+            }else{
+                Peer.getStorage().removeProcessingChunk(chunk);
             }
 
         } catch (IOException e) {
             System.out.println("Error sending Stored message.");
+            e.printStackTrace();
+        }catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     private synchronized void manageStored(String[] headerSplit, int headerLength) {
         // STORED <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
+        System.out.println("Received stored " + headerSplit[4]);
         Peer.getStorage().incRepDegree(Integer.parseInt(headerSplit[4]), headerSplit[3], headerSplit[2]);
     }
 

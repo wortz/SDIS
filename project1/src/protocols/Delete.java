@@ -11,9 +11,8 @@ import java.util.ArrayList;
 public class Delete implements Runnable{
 
 
-    public Backup(String file_path, int replicationDegree) {
-		this.path = file_path;
-		this.replicationDegree = replicationDegree;
+    public Delete(String file_path, int replicationDegree) {
     }
     
+    public void run() {}
 }

@@ -102,6 +102,16 @@ public class Storage implements Serializable {
 		System.out.println("Chunk not found to be removed.");
 	}
 
+	public synchronized void updateProcessingChunk(Chunk chunk){
+		for (int i = 0; i < processingChunks.size(); i++) {
+			if (processingChunks.get(i).compareChunk(chunk.getchunkID(), chunk.getFileID())) {
+				processingChunks.remove(i);
+				storeChunk(chunk);
+				return;
+			}
+		}
+	}
+
 	public synchronized boolean finishedDegree(int chunkID, String fileID) {
 		for (int i = 0; i < this.processingChunks.size(); i++) {
 			if (processingChunks.get(i).compareChunk(chunkID, fileID)) {

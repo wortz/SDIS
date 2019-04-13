@@ -54,6 +54,7 @@ public class Backup implements Runnable{
                         System.out.println("Failed to backup file: " + fileID);
                         return;
                     }
+                    System.out.println("PutChunk : " + (i + 1));
                     Peer.getMDB().message(message);
                     numberOfTries++;
                     Thread.sleep(waitTime);
