@@ -40,10 +40,10 @@ public class MessageHandler implements Runnable {
             manageStored(headerSplit);
             break;
         case "GETCHUNK":
-            manageGetChunk();
+            manageGetChunk(headerSplit);
             break;
         case "CHUNK":
-            manageChunk();
+            manageChunk(headerSplit, header.length());
             break;
         case "DELETE":
             manageDelete(headerSplit);
@@ -63,8 +63,10 @@ public class MessageHandler implements Runnable {
         String fileId = headerSplit[3];
         int chunkNr = Integer.parseInt(headerSplit[4]);
         int repDegree = Integer.parseInt(headerSplit[5]);
+       
         byte[] body = new byte[(this.packet.length - headerLength - 4)];
         System.arraycopy(this.packet, headerLength + 4, body, 0, body.length);
+
         Chunk chunk = new Chunk(chunkNr, body, repDegree, fileId, senderID);
         Peer.getStorage().addProcessingChunk(chunk);
         try {
@@ -112,18 +114,49 @@ public class MessageHandler implements Runnable {
     }
 
     private synchronized void manageGetChunk(String[] headerSplit) {
+        // GETCHUNK <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
+        
         double version = Double.parseDouble(headerSplit[1]);
         String senderID = headerSplit[2];
         String fileId = headerSplit[3];
         int chunkNr = Integer.parseInt(headerSplit[4]);
-        for(Chunk chunk : Peer.getStorage().getChunksStored()){
-            if(chunk.compareChunk(chunkNr, fileId)){
-                byte[] body = chunk.getData();
+        try {
+
+            for(Chunk chunk : Peer.getStorage().getChunksStored()){
+                if(chunk.compareChunk(chunkNr, fileId)){
+                    byte[] body = chunk.getData();
+
+                    String headerMessage = "CHUNK " + headerSplit[1] + " " + Peer.getId() + " " + fileId + " " + chunkNr
+                        + Utility.CRLF + Utility.CRLF;
+                    byte[] header = headerMessage.getBytes("US-ASCII");
+                    byte[] message = new byte[header.length+body.length];
+                    System.arraycopy(header, 0, message, 0, header.length);
+                    System.arraycopy(body, 0, message, header.length, body.length);
+
+                    Peer.getMDR().message(message);
+                }
             }
+        }catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
-    private synchronized void manageChunk() {
+    private synchronized void manageChunk(String[] headerSplit, int headerLength) {
+        // CHUNK <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF><Body>
+        double version = Double.parseDouble(headerSplit[1]);
+        String senderID = headerSplit[2];
+        String fileId = headerSplit[3];
+        int chunkNr = Integer.parseInt(headerSplit[4]);
+
+        byte[] body = new byte[(this.packet.length - headerLength - 4)];
+        System.arraycopy(this.packet, headerLength + 4, body, 0, body.length);
+
+        Chunk chunk = new Chunk(chunkNr, body, 1, fileId, senderID);
+
+        //save Chunk in file I think
+
+
 
     }
 

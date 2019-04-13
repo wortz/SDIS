@@ -33,7 +33,7 @@ public class Backup implements Runnable{
 
         try {
             String headerAux = "PUTCHUNK " + Peer.getVersion() + " " + Peer.getId() + " " + fileID + " ";
-            ArrayList<byte[]> chunks = Utility.getChunks(this.path);
+             ArrayList<byte[]> chunks = Utility.getChunks(this.path);
 
             for (int i = 0; i < chunks.size(); i++) {
                 String restMessage = headerAux + (i + 1) + " " + this.replicationDegree + " " + Utility.CRLF + Utility.CRLF;
