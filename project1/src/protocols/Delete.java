@@ -14,19 +14,20 @@ import file.*;
 
 
 public class Delete implements Runnable{
-    private String file_path;
+    private String path;
 
-    public Delete(String file_path) {
-      this.file_path = file_path;
+    public Delete(String path) {
+      this.path = path;
     }
     
     @Override
     public void run() {
       for(int i = 0; i < Peer.getStorage().getStoredFiles().size(); i++){
-        if(Peer.getStorage().getStoredFiles().get(i).getPath().equals(this.file_path)){
+        if(Peer.getStorage().getStoredFiles().get(i).getPath().equals(this.path)){
+          String fileID=Peer.getStorage().getStoredFiles().get(i).getfileID();
           for(int t=0;t<Utility.DELETE_TRIES;t++){
-            String header = "DELETE " + Peer.getVersion() + " " + Peer.getId() + " " + Peer.getStorage().getStoredFiles().get(i).getfileID() + " " + Utility.CRLF + Utility.CRLF;
-            System.out.println("Sent DELETE of file " + Peer.getStorage().getStoredFiles().get(i).getfileID());
+            String header = "DELETE " + Peer.getVersion() + " " + Peer.getId() + " " + fileID + " " + Utility.CRLF + Utility.CRLF;
+            System.out.println("Sent DELETE of file " + fileID);
             try{
             Peer.getMC().message(header.getBytes("US-ASCII"));
             }catch(IOException e){

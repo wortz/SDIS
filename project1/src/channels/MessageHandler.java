@@ -111,8 +111,16 @@ public class MessageHandler implements Runnable {
         Peer.getStorage().incRepDegree(Integer.parseInt(headerSplit[4]), headerSplit[3], headerSplit[2]);
     }
 
-    private synchronized void manageGetChunk() {
-
+    private synchronized void manageGetChunk(String[] headerSplit) {
+        double version = Double.parseDouble(headerSplit[1]);
+        String senderID = headerSplit[2];
+        String fileId = headerSplit[3];
+        int chunkNr = Integer.parseInt(headerSplit[4]);
+        for(Chunk chunk : Peer.getStorage().getChunksStored()){
+            if(chunk.compareChunk(chunkNr, fileId)){
+                byte[] body = chunk.getData();
+            }
+        }
     }
 
     private synchronized void manageChunk() {

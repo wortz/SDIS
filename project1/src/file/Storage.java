@@ -87,6 +87,12 @@ public class Storage implements Serializable {
 	}
 	
 	public synchronized void addFileData(FileData filedata){
+		for(int i = 0; i < this.filesStored.size(); i++){
+			if(this.filesStored.get(i).getPath().equals(filedata.getPath())){
+				this.filesStored.remove(i);
+				break;
+			}
+		}
 		this.filesStored.add(filedata);
 	}
 

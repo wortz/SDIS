@@ -24,13 +24,18 @@ public class TestApp {
             RmiInterface stub = (RmiInterface) registry.lookup(peer_ap);
             switch (sub_protocol) {
                 case "BACKUP":
+                    //java TestApp 1923 BACKUP test1.pdf 3
                     String pathBackup = args[2];
                     int replicationDegree = Integer.parseInt(args[3]);
                     stub.backupFile(pathBackup, replicationDegree);
                     break;
                 case "RESTORE":
+                    //java TestApp 1923 RESTORE test1.pdf
+                    String pathRestore = args[2];
+                    stub.restoreFile(pathRestore);
                     break;
                 case "DELETE":
+                    //java TestApp 1923 DELETE test1.pdf
                     String pathDelete = args[2];
                     stub.deleteFile(pathDelete);
                     break;

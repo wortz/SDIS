@@ -103,6 +103,12 @@ public class Peer implements RmiInterface {
         exec.execute(delete);
     }
 
+    @Override
+    public void restoreFile(String path) throws RemoteException {
+        Restore restore = new Restore(path);
+        exec.execute(restore);
+    }
+
     protected void initRmi(String service_ap) {
         try {
             RmiInterface stub = (RmiInterface) UnicastRemoteObject.exportObject(this, 0);
