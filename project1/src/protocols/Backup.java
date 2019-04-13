@@ -17,13 +17,11 @@ public class Backup implements Runnable{
 	
 	protected String path;
 	protected int replicationDegree;
-	protected Peer peer;
     protected Channel MDB;
 
 	
-	public Backup(Peer peer, String file_path, int replicationDegree, Channel MDB) {
+	public Backup(String file_path, int replicationDegree, Channel MDB) {
 		this.path = file_path;
-		this.peer = peer;
 		this.replicationDegree = replicationDegree;
         this.MDB=MDB;
 	}
@@ -34,7 +32,7 @@ public class Backup implements Runnable{
         String fileID = Utility.getFileSHA(file);
 
         try {
-            String headerAux = "PUTCHUNK " + peer.getVersion() + " " + this.peer.getId() + " " + fileID + " ";
+            String headerAux = "PUTCHUNK " + Peer.getVersion() + " " + Peer.getId() + " " + fileID + " ";
             ArrayList<byte[]> chunks = Utility.getChunks(this.path);
 
             for (int i = 0; i < chunks.size(); i++) {
@@ -47,13 +45,13 @@ public class Backup implements Runnable{
                 System.arraycopy(body, 0, message, header.length, body.length);
 
                 //Creates a chunk and adds it to the processing array in storage
-                Chunk chunk = new Chunk(i+1, body, this.replicationDegree, fileID, this.peer.getId());
-                peer.getStorage().addProcessingChunk(chunk);
+                Chunk chunk = new Chunk(i+1, body, this.replicationDegree, fileID, Peer.getId());
+                Peer.getStorage().addProcessingChunk(chunk);
 
                 int numberOfTries=0;
                 int waitTime=Utility.INITIAL_WAIT_TIME;
                 //while that chunk in processing array is not with desired rep degree it continues to try
-                while(!peer.getStorage().finishedDegree(i+1, fileID)){
+                while(!Peer.getStorage().finishedDegree(i+1, fileID)){
                     if(numberOfTries == Utility.PUTCHUNK_TRIES){
                         System.out.println("Failed to backup file: " + fileID);
                         return;
@@ -64,7 +62,7 @@ public class Backup implements Runnable{
                     Thread.sleep(waitTime);
                     waitTime*=2;
                 }
-                peer.getStorage().removeProcessingChunk(chunk);
+                Peer.getStorage().removeProcessingChunk(chunk);
             }
         } catch (IOException e) {
             e.printStackTrace();

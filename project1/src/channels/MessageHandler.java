@@ -22,18 +22,15 @@ import java.io.InputStreamReader;
 public class MessageHandler implements Runnable {
 
     protected byte[] packet;
-    protected Peer peer;
 
-    public MessageHandler(byte[] packet, Peer peer) {
-        System.out.println("Um handler");
+    public MessageHandler(byte[] packet) {
         this.packet = packet;
-        this.peer = peer;
     }
 
     public void run() {
         String header = getHeaderPacket();
         String[] headerSplit = header.split(" ");
-        if (headerSplit[2].equals(this.peer.getId()))
+        if (headerSplit[2].equals(Peer.getId()))
             return;
         switch (headerSplit[0]) {
         case "PUTCHUNK":
@@ -63,15 +60,14 @@ public class MessageHandler implements Runnable {
         byte[] body = new byte[(this.packet.length - headerLength - 4)];
         System.arraycopy(this.packet, headerLength + 4, body, 0, body.length);
         Chunk chunk = new Chunk(Integer.parseInt(headerSplit[4]), body, Integer.parseInt(headerSplit[5]), headerSplit[3], headerSplit[2]);
-        chunk.addStored(this.peer.getId());
-        this.peer.getStorage().storeChunk(chunk);
+        chunk.addStored(Peer.getId());
+        Peer.getStorage().storeChunk(chunk);
         System.out.println("Stored chunk : " + headerSplit[4] + " from file : " + headerSplit[3]);
         try{
-        String storedResponse = "STORED " + headerSplit[1] + " " + this.peer.getId() + " " + headerSplit[3] + " " + headerSplit[4] + Utility.CRLF + Utility.CRLF;
+        String storedResponse = "STORED " + headerSplit[1] + " " + Peer.getId() + " " + headerSplit[3] + " " + headerSplit[4] + Utility.CRLF + Utility.CRLF;
         byte[] stored = storedResponse.getBytes("US-ASCII");
-        Message storedMessage = new Message(stored, this.peer.getMC());
-        this.peer.getExec().schedule(storedMessage, Utility.getRandomValue(Utility.MAX_WAIT_TIME), TimeUnit.MILLISECONDS);
-        System.out.println("Stored message sent of file: " + headerSplit[3] + " with chunk number : " + headerSplit[4]);
+        Message storedMessage = new Message(stored, Peer.getMC());
+        Peer.getExec().schedule(storedMessage, Utility.getRandomValue(Utility.MAX_WAIT_TIME), TimeUnit.MILLISECONDS);
         }catch(IOException e){
             System.out.println("Error sending Stored message.");
             e.printStackTrace();
@@ -80,8 +76,7 @@ public class MessageHandler implements Runnable {
 
     private synchronized void manageStored(String[] headerSplit, int headerLength) {
         //STORED <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
-        this.peer.getStorage().incRepDegree(Integer.parseInt(headerSplit[4]), headerSplit[3], headerSplit[2]);
-        System.out.println("Stored message received : " + headerSplit[2] + " " + headerSplit[3] + " " + headerSplit[4]);
+        Peer.getStorage().incRepDegree(Integer.parseInt(headerSplit[4]), headerSplit[3], headerSplit[2]);
     }
 
     private synchronized void manageGetChunk() {

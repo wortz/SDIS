@@ -23,25 +23,25 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class Peer implements RmiInterface {
     private static double version;
 
-    private String id;
-    private String service_ap;
+    private static String id;
+    private static String service_ap;
 
-    private Channel MC;
-    private Channel MDB;
-    private Channel MDR;
-    private Storage storage;
-    private ScheduledExecutorService exec;
+    private static Channel MC;
+    private static Channel MDB;
+    private static Channel MDR;
+    private static Storage storage;
+    private static ScheduledExecutorService exec;
 
     private Peer(String args[]) throws IOException {
-        exec = new ScheduledThreadPoolExecutor(10);
+        exec = new ScheduledThreadPoolExecutor(100);
 
-        this.version = Double.parseDouble(args[0]);
+        version = Double.parseDouble(args[0]);
 
-        this.id = args[1];
-        this.storage = new Storage();
+        id = args[1];
+        storage = new Storage();
 
-        this.service_ap = args[2];
-        this.initRmi(service_ap);
+        service_ap = args[2];
+        initRmi(service_ap);
 
         String MC_Address = args[3];
         int MC_Port = Integer.parseInt(args[4]);
@@ -52,36 +52,36 @@ public class Peer implements RmiInterface {
         String MDR_Address = args[7];
         int MDR_Port = Integer.parseInt(args[8]);
 
-        MC = new Channel(MC_Address, MC_Port,this);
-        MDB = new Channel(MDB_Address, MDB_Port,this);
-        MDR = new Channel(MDR_Address, MDR_Port,this);
+        MC = new Channel(MC_Address, MC_Port);
+        MDB = new Channel(MDB_Address, MDB_Port);
+        MDR = new Channel(MDR_Address, MDR_Port);
 
         exec.execute(MC);
         exec.execute(MDB);
         exec.execute(MDR);
     }
 
-    public String getId() {
+    public static String getId() {
         return id;
     }
 
-    public double getVersion() {
+    public static double getVersion() {
         return version;
     }
 
-    public ScheduledExecutorService getExec() {
+    public static ScheduledExecutorService getExec() {
         return exec;
     }
 
-    public Channel getMDR() {
+    public static Channel getMDR() {
         return MDR;
     }
 
-    public Channel getMDB() {
+    public static Channel getMDB() {
         return MDB;
     }
 
-    public Channel getMC() {
+    public static Channel getMC() {
         return MC;
     }
 
@@ -93,15 +93,8 @@ public class Peer implements RmiInterface {
 
     @Override
     public void backupFile(String path, int replicationDegree) throws RemoteException {
-        Backup backup = new Backup(this, path, replicationDegree, this.MDB);
+        Backup backup = new Backup(path, replicationDegree, this.MDB);
         exec.execute(backup);
-    }
-
-    public void receivedMessage(DatagramPacket packet){
-        int packet_length=packet.getLength();
-        byte[] msg= Arrays.copyOfRange(packet.getData(), 0, packet_length);
-        MessageHandler handler=new MessageHandler(msg,this);
-        exec.execute(handler);
     }
 
     protected void initRmi(String service_ap) {
@@ -118,8 +111,8 @@ public class Peer implements RmiInterface {
         }
     }
 
-    public synchronized Storage getStorage(){
-        return this.storage;
+    public synchronized static Storage getStorage(){
+        return storage;
     }
 
     public static void main(String args[]) throws IOException {
