@@ -9,6 +9,7 @@ import java.util.List;
 import peer.Peer;
 import utility.Utility;
 import file.*;
+import java.util.Random;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +50,7 @@ public class MessageHandler implements Runnable {
             manageDelete(headerSplit);
             break;
         case "REMOVED":
-            manageRemoved();
+            manageRemoved(headerSplit);
             break;
 
         }
@@ -182,8 +183,49 @@ public class MessageHandler implements Runnable {
         pathToFile.delete();
     }
 
-    private synchronized void manageRemoved() {
+    private synchronized void manageRemoved(String[] headerSplit) {
+        // REMOVED <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
 
+        double version = Double.parseDouble(headerSplit[1]);
+        String senderID = headerSplit[2];
+        String fileId = headerSplit[3];
+        int chunkNr = Integer.parseInt(headerSplit[4]);
+
+        Chunk chunk = new Chunk(chunkNr, new byte[0], 1, senderID, fileId);
+        ArrayList<Chunk> chunks = Peer.getStorage().getChunksStored();
+
+        if(chunks.contains(chunk)) {	
+            int i=0;	
+            while(true) {
+                
+                if(chunks.get(i).getFileID().equals(chunk.getFileID())) {
+
+                    chunk = chunks.get(i);
+                    chunk.removedStored(chunk.getFileID());
+                    
+                    
+                    if(chunk.getIDStored().size() < chunk.getReplicationDegree()) {
+                        
+                        // wait a random delay
+                        Random rand = new Random();
+                        int  n = rand.nextInt(400) + 1;
+                                                                            
+                        try {
+                            Thread.sleep(n);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        //handle putchunk to get desired replication degree
+
+                    }
+                    return;
+                }
+                i++;
+            }    
+        } 
+
+        System.out.println("Received removed ");
     }
 
     public String getHeaderPacket() {
