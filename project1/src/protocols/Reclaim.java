@@ -70,7 +70,7 @@ public class Reclaim implements Runnable{
                 e.printStackTrace();
         }
 
-        Peer.getStorage().setMemoryFree(reclaimSize);
+        Peer.getStorage().setMemoryFree(reclaimSize - memoryUsed);
         Peer.getStorage().setMemoryUsed(memoryUsed);
     }
 }

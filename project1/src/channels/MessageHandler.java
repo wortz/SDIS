@@ -191,18 +191,11 @@ public class MessageHandler implements Runnable {
         String fileId = headerSplit[3];
         int chunkNr = Integer.parseInt(headerSplit[4]);
 
-        Chunk chunk = new Chunk(chunkNr, new byte[0], 1, senderID, fileId);
-        ArrayList<Chunk> chunks = Peer.getStorage().getChunksStored();
+        for(Chunk chunk : Peer.getStorage().getChunksStored()){
+        	
+                if(chunk.getFileID() == fileId) {
 
-        if(chunks.contains(chunk)) {	
-            int i=0;	
-            while(true) {
-                
-                if(chunks.get(i).getFileID().equals(chunk.getFileID())) {
-
-                    chunk = chunks.get(i);
                     chunk.removedStored(chunk.getFileID());
-                    
                     
                     if(chunk.getIDStored().size() < chunk.getReplicationDegree()) {
                         
@@ -216,15 +209,43 @@ public class MessageHandler implements Runnable {
                             e.printStackTrace();
                         }
 
-                        //handle putchunk to get desired replication degree
+                        String headerAux = "PUTCHUNK " + Peer.getVersion() + " " + Peer.getId() + 
+                        " " + chunk.getchunkID() + " " + chunk.getReplicationDegree();
+                        byte[] header = headerAux.getBytes("US-ASCII");
+                        byte[] body = chunk.getData();
+                        byte[] message = new byte[header.length+body.length];
+                        System.arraycopy(header, 0, message, 0, header.length);
+                        System.arraycopy(body, 0, message, header.length, body.length);
+
+                        Chunk chunk1 = new Chunk(chunk.getchunkID(), body, chunk.getReplicationDegree(), chunk.getFileID(), Peer.getId());
+                        Peer.getStorage().addProcessingChunk(chunk1);
+
+                        int numberOfTries=0;
+                        int waitTime=Utility.INITIAL_WAIT_TIME;
+                        //while that chunk in processing array is not with desired rep degree it continues to try
+                        while(!Peer.getStorage().finishedDegree(chunk.getchunkID(), chunk.getFileID())){
+                            if(numberOfTries == Utility.PUTCHUNK_TRIES){
+                                System.out.println("Failed to backup file: " + chunk.getFileID());
+                                Peer.getStorage().removeProcessingChunk(chunk);
+                                return;
+                            }
+                            System.out.println("PutChunk : " + (chunk.getchunkID()));
+                            Peer.getMDB().message(message);
+                            numberOfTries++;
+                            Thread.sleep(waitTime);
+                            waitTime*=2;
+                        }
+                        //adds the current degree of chunk to filedata
+                        filedata.addChunk(Peer.getStorage().getChunkCurDegree(chunk));
+                        Peer.getStorage().removeProcessingChunk(chunk);
+                    
+                        Peer.getStorage().addFileData(filedata);
+
 
                     }
                     return;
                 }
-                i++;
             }    
-        } 
-
         System.out.println("Received removed ");
     }
 
