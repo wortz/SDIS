@@ -68,13 +68,14 @@ public class MessageHandler implements Runnable {
         System.arraycopy(this.packet, headerLength + 4, body, 0, body.length);
 
         Chunk chunk = new Chunk(chunkNr, body, repDegree, fileId, senderID);
+        //adds to the processing chunks
         Peer.getStorage().addProcessingChunk(chunk);
         try {
             String storedResponse = "STORED " + headerSplit[1] + " " + Peer.getId() + " " + fileId + " " + chunkNr
                     + Utility.CRLF + Utility.CRLF;
             byte[] stored = storedResponse.getBytes("US-ASCII");
             Thread.sleep(Utility.getRandomValue(Utility.MAX_WAIT_TIME));
-            if (!Peer.getStorage().finishedDegree(chunkNr, fileId)) {
+            if (!Peer.getStorage().finishedDegree(chunkNr, fileId) || version==1.0){
                 System.out.println("Stored : " + chunkNr);
                 Peer.getMC().message(stored);
                 String pathBackup = "../PeerStorage/peer" + Peer.getId() + "/" + "backup";
