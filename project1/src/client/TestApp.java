@@ -40,6 +40,9 @@ public class TestApp {
                     stub.deleteFile(pathDelete);
                     break;
                 case "RECLAIM":
+                    //java TestApp 1923 RECLAIM 0
+                    int sizeReclaim = Integer.parseInt(args[2]);
+                    stub.reclaim(sizeReclaim);
                     break;
                 case "STATE":
                     break;

@@ -210,6 +210,8 @@ public class MessageHandler implements Runnable {
                             e.printStackTrace();
                         }
 
+                        try{
+
                         String headerAux = "PUTCHUNK " + Peer.getVersion() + " " + Peer.getId() + 
                         " " + chunk.getchunkID() + " " + chunk.getReplicationDegree();
                         byte[] header = headerAux.getBytes("US-ASCII");
@@ -236,13 +238,18 @@ public class MessageHandler implements Runnable {
                             Thread.sleep(waitTime);
                             waitTime*=2;
                         }
+                    
                         //adds the current degree of chunk to filedata
-                        filedata.addChunk(Peer.getStorage().getChunkCurDegree(chunk));
+                        //filedata.addChunk(Peer.getStorage().getChunkCurDegree(chunk));
                         Peer.getStorage().removeProcessingChunk(chunk);
                     
-                        Peer.getStorage().addFileData(filedata);
-
-
+                        //Peer.getStorage().addFileData(filedata);
+                        }catch (IOException e) {
+                            System.out.println("Error sending Removed message.");
+                            e.printStackTrace();
+                        }catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                     return;
                 }
