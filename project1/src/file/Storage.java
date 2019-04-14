@@ -50,6 +50,14 @@ public class Storage implements Serializable {
 		return restoreChunks;
 	}
 
+	public void setMemoryFree(long memoryFree) {
+		this.memoryFree = memoryFree;
+	}
+
+	public void setMemoryUsed(long memoryUsed) {
+		this.memoryUsed = memoryUsed;
+	}
+
 	public synchronized boolean alreadyRestored(Chunk chunk){
 		for(int i = 0; i < this.restoreChunks.size(); i++){
 			if(this.restoreChunks.get(i).compareChunk(chunk.getchunkID(), chunk.getFileID())){
@@ -128,6 +136,17 @@ public class Storage implements Serializable {
 			}
 		}
 	}
+
+	public synchronized void deleteChunk(Chunk chunk){
+		for(int i=0; i<this.chunks.size();i++){
+			if(this.chunks.get(i).getFileID().equals(chunk.getFileID())) {
+				chunks.remove(i);
+				break;
+			}
+		}
+
+		//File file = new File(Peer.CHUNKS + chunk.getID());
+	}
 	
 	public synchronized void addFileData(FileData filedata){
 		for(int i = 0; i < this.filesStored.size(); i++){
@@ -158,10 +177,7 @@ public class Storage implements Serializable {
 				break;
 			}
 		}
-		/*
-		 * try { //Peer.saveDisk(); } catch (IOException e) { e.printStackTrace(); }
-		 */
-
+	
 	}
 
 	public synchronized void removeProcessingChunk(Chunk chunk) {

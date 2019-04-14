@@ -27,6 +27,10 @@ public class Chunk {
         return this.data;
     }
 
+    public ArrayList<String> getIDStored() {
+        return IDStored;
+    }
+
     public synchronized int getReplicationDegree() {
         return this.replicationDegree;
     }
@@ -51,6 +55,13 @@ public class Chunk {
                 return;
         }
         this.IDStored.add(id);
+    }
+
+    public synchronized void removedStored(String id) {
+        for(int i=0; i<this.IDStored.size();i++){
+            if(this.IDStored.get(i).equals(id))
+                this.IDStored.remove(id);
+        }
     }
 
     public synchronized String getFileID() {

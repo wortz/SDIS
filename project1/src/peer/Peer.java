@@ -109,6 +109,12 @@ public class Peer implements RmiInterface {
         exec.execute(restore);
     }
 
+    @Override
+    public void reclaim(int space) throws RemoteException {
+        Reclaim reclaim = new Reclaim(space);
+        exec.execute(reclaim);
+    }
+
     protected void initRmi(String service_ap) {
         try {
             RmiInterface stub = (RmiInterface) UnicastRemoteObject.exportObject(this, 0);

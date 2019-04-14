@@ -11,4 +11,6 @@ public interface RmiInterface extends Remote {
     void backupFile(String path, int replicationDegree) throws RemoteException;
     void restoreFile(String path) throws RemoteException;
     void deleteFile(String path) throws RemoteException;
+    void reclaim(int space) throws RemoteException;
+
 }
