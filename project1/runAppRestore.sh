@@ -1,2 +1,2 @@
 cd ./bin
-java client/TestApp peer1 RESTORE ../filesToTest/test.txt
+java client/TestApp "$service_ap" "$protocol" "$path"
