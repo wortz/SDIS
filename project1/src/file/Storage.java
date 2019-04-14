@@ -110,6 +110,8 @@ public class Storage implements Serializable {
 			}
 		}
 
+		this.chunks.add(chunk);
+
 		memoryFree -= chunk_data.length;
 		memoryUsed += chunk_data.length;
 

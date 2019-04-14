@@ -29,7 +29,7 @@ public class Backup implements Runnable{
 		File file = new File(this.path);
         String fileID = Utility.getFileSHA(file);
         //creates filedata
-        FileData filedata = new FileData(this.path, fileID);
+        FileData filedata = new FileData(this.path, fileID, file.getName());
 
         try {
             String headerAux = "PUTCHUNK " + Peer.getVersion() + " " + Peer.getId() + " " + fileID + " ";
